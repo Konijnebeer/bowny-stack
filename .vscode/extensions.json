@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "databricks.neon-local-connect",
+    "bradlc.vscode-tailwindcss",
+    "vitest.explorer"
+  ]
+}
