@@ -1,7 +1,9 @@
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router"
-import { getPostByIdQueryOptions } from "#/features/post/hooks/post.query"
-import { Skeleton } from "#/components/ui/skeleton"
+
 import { Button } from "#/components/ui/button"
+import { Skeleton } from "#/components/ui/skeleton"
+
+import { getPostByIdQueryOptions } from "#/features/post"
 
 export const Route = createFileRoute("/post/$id")({
   // TODO: No async needed, check others

@@ -1,8 +1,10 @@
 import { Link } from "@tanstack/react-router"
-import { Button } from "#/components/ui/button"
-import { authClient } from "#/lib/auth-client"
+
 import { ModeToggle } from "#/components/mode-toggle"
+import { Button } from "#/components/ui/button"
 import { Skeleton } from "#/components/ui/skeleton"
+
+import { authClient } from "#/lib/auth-client"
 
 function Header() {
   const { data: session, isPending } = authClient.useSession()

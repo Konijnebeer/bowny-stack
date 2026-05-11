@@ -1,3 +1,7 @@
+import { useState } from "react"
+import { toast } from "sonner"
+import { createFileRoute, Link } from "@tanstack/react-router"
+
 import { Button } from "#/components/ui/button"
 import {
   Card,
@@ -9,13 +13,9 @@ import {
 import { FieldGroup } from "#/components/ui/field"
 import { Spinner } from "#/components/ui/spinner"
 
-import { UserRegisterSchema } from "#/features/auth/auth.type"
-
-import { createFileRoute, Link } from "@tanstack/react-router"
-import { toast } from "sonner"
-import { useAccountForm } from "#/features/auth/hooks/auth.form"
 import { authClient } from "#/lib/auth-client"
-import { useState } from "react"
+
+import { useAccountForm, UserRegisterSchema } from "#/features/auth"
 
 export const Route = createFileRoute("/(auth)/register")({
   component: RouteComponent,

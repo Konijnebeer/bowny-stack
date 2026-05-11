@@ -1,6 +1,7 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-zod"
 import { z } from "zod"
-import { posts } from "#/features/post/post.schema"
+
+import { posts } from "#/features/post/schema"
 
 const baseInsertSchema = createInsertSchema(posts)
 const baseSelectSchema = createSelectSchema(posts)

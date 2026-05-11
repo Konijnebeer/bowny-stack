@@ -1,5 +1,6 @@
-import { checkAuth } from "#/lib/route-guard"
 import { createFileRoute, Outlet } from "@tanstack/react-router"
+
+import { checkAuth } from "#/lib/route-guard"
 
 export const Route = createFileRoute("/post")({
   beforeLoad: async ({ location }) => {

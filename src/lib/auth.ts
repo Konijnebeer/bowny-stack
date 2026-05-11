@@ -1,6 +1,7 @@
 import { betterAuth } from "better-auth"
-import { tanstackStartCookies } from "better-auth/tanstack-start"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
+import { tanstackStartCookies } from "better-auth/tanstack-start"
+
 import { getDB } from "@/db"
 import * as schema from "@/db/schema"
 

@@ -1,4 +1,9 @@
+import { useState } from "react"
+import { toast } from "sonner"
+import z from "zod"
 import { createFileRoute, Link, redirect } from "@tanstack/react-router"
+
+import { Button } from "#/components/ui/button"
 import {
   Card,
   CardContent,
@@ -6,16 +11,12 @@ import {
   CardHeader,
   CardTitle,
 } from "#/components/ui/card"
-import { Button } from "#/components/ui/button"
 import { FieldGroup } from "#/components/ui/field"
 import { Spinner } from "#/components/ui/spinner"
-import { toast } from "sonner"
 
-import { useAccountForm } from "#/features/auth/hooks/auth.form"
-import { UserLoginSchema } from "#/features/auth/auth.type"
-import z from "zod"
 import { authClient } from "#/lib/auth-client"
-import { useState } from "react"
+
+import { useAccountForm, UserLoginSchema } from "#/features/auth"
 
 export const Route = createFileRoute("/(auth)/login")({
   validateSearch: z.object({

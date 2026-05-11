@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
-import { useDeletePost, useGetPostById } from "#/features/post/hooks/post.query"
+
 import { Button } from "#/components/ui/button"
+
+import { useDeletePost, useGetPostById } from "#/features/post"
 
 export const Route = createFileRoute("/post/$id/")({
   component: RouteComponent,

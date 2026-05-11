@@ -1,4 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query"
+
 import { authClient } from "#/lib/auth-client"
 
 async function fetchAccount() {

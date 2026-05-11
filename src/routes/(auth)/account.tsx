@@ -1,13 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router"
-import { Skeleton } from "#/components/ui/skeleton"
+
 import { Button } from "#/components/ui/button"
+import { Skeleton } from "#/components/ui/skeleton"
 
 import { authClient } from "#/lib/auth-client"
 import { checkAuth } from "#/lib/route-guard"
-import {
-  accountQueryOptions,
-  useAccountQuery,
-} from "#/features/auth/hooks/auth.query"
+
+import { accountQueryOptions, useAccountQuery } from "#/features/auth"
 
 export const Route = createFileRoute("/(auth)/account")({
   beforeLoad: async ({ location }) => {

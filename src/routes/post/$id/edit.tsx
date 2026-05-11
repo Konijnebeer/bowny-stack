@@ -1,11 +1,16 @@
-import { createFileRoute, Link } from "@tanstack/react-router"
-import { useGetPostById, useUpdatePost } from "#/features/post/hooks/post.query"
-import { FieldGroup } from "#/components/ui/field"
-import { Button } from "#/components/ui/button"
-import { usePostForm } from "#/features/post/hooks/post.form"
 import { toast } from "sonner"
+import { createFileRoute, Link } from "@tanstack/react-router"
+
+import { Button } from "#/components/ui/button"
+import { FieldGroup } from "#/components/ui/field"
 import { Spinner } from "#/components/ui/spinner"
-import { createPostSchema, updatePostSchema } from "#/features/post/post.type"
+
+import {
+  createPostSchema,
+  useGetPostById,
+  usePostForm,
+  useUpdatePost,
+} from "#/features/post"
 
 export const Route = createFileRoute("/post/$id/edit")({
   component: RouteComponent,

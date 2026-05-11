@@ -1,2 +1,2 @@
-export * from "#/features/auth/auth.schema"
-export * from "#/features/post/post.schema"
+export * from "#/features/auth/schema"
+export * from "#/features/post/schema"

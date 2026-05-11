@@ -1,14 +1,14 @@
-import { createServerFn } from "@tanstack/react-start"
-import { notFound } from "@tanstack/react-router"
-import { useMutation, useSuspenseQuery } from "@tanstack/react-query"
-import type { QueryClient } from "@tanstack/react-query"
 import { and, desc, eq } from "drizzle-orm"
+import z from "zod"
+import type { QueryClient } from "@tanstack/react-query"
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query"
+import { notFound } from "@tanstack/react-router"
+import { createServerFn } from "@tanstack/react-start"
 
 import { getDB } from "#/db"
-import z from "zod"
-import { posts } from "../post.schema"
-import { createPostSchema, updatePostSchema } from "../post.type"
-import type { UpdatePostInput } from "../post.type"
+import { posts } from "#/features/post/schema"
+import type { UpdatePostInput } from "#/features/post/type"
+import { createPostSchema, updatePostSchema } from "#/features/post/type"
 import { authMiddleware } from "#/middleware/auth"
 
 const db = getDB()

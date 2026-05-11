@@ -1,6 +1,7 @@
 import { relations } from "drizzle-orm"
 import { pgTable, serial, text, timestamp } from "drizzle-orm/pg-core"
-import { users } from "#/features/auth/auth.schema"
+
+import { users } from "#/features/auth/schema"
 
 export const posts = pgTable("posts", {
   id: serial().primaryKey(),

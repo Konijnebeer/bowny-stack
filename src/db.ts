@@ -1,8 +1,9 @@
 import type { NeonHttpDatabase } from "drizzle-orm/neon-http"
 import { drizzle } from "drizzle-orm/neon-http"
 import { neon } from "@neondatabase/serverless"
-import { env } from "#/env"
+
 import * as schema from "#/db/schema.ts"
+import { env } from "#/env"
 
 let client: ReturnType<typeof neon>
 

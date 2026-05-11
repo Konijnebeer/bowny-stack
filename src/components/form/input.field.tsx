@@ -1,6 +1,7 @@
-import { useFieldContext } from "#/lib/form-context"
 import { Field, FieldError, FieldLabel } from "#/components/ui/field"
 import { Input } from "#/components/ui/input"
+
+import { useFieldContext } from "#/lib/form-context"
 
 type InputFieldProps = {
   label: string

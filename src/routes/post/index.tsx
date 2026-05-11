@@ -1,11 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router"
-import {
-  getPostsQueryOptions,
-  useGetPosts,
-} from "#/features/post/hooks/post.query"
+
 import { Button } from "#/components/ui/button"
-import { PostCard } from "#/features/post/components/post-card"
 import { Skeleton } from "#/components/ui/skeleton"
+
+import { getPostsQueryOptions, PostCard, useGetPosts } from "#/features/post"
 
 export const Route = createFileRoute("/post/")({
   loader: async ({ context: { queryClient } }) => {

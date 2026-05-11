@@ -1,6 +1,8 @@
-import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card"
-import type { PostsResponse } from "#/features/post/post.type"
 import { Link } from "@tanstack/react-router"
+
+import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card"
+
+import type { PostsResponse } from "#/features/post/type"
 
 function PostCard({ post }: { post: PostsResponse[number] }) {
   return (

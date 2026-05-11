@@ -1,4 +1,3 @@
-import { useFieldContext } from "#/lib/form-context"
 import { Field, FieldError, FieldLabel } from "#/components/ui/field"
 import {
   InputGroup,
@@ -6,6 +5,8 @@ import {
   InputGroupText,
   InputGroupTextarea,
 } from "#/components/ui/input-group"
+
+import { useFieldContext } from "#/lib/form-context"
 
 type TextAreaFieldProps = {
   label: string
