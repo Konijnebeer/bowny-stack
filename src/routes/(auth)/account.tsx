@@ -48,24 +48,26 @@ function RouteError({ error }: { error: Error }) {
 function RouteComponent() {
   const accountQuery = useAccountQuery()
   const navigate = Route.useNavigate()
+  const queryClient = Route.useRouteContext().queryClient
+
+  function handleLogout() {
+    authClient.signOut({
+      fetchOptions: {
+        onSuccess: async () => {
+          // Make sure any data where authorization is required is cleared from the cache
+          queryClient.clear()
+          navigate({ to: "/login" })
+        },
+      },
+    })
+  }
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-10">
       <div className="flex items-end justify-between py-2">
         <h1 className="text-2xl">Account</h1>
 
-        <Button
-          variant="outline"
-          onClick={() =>
-            authClient.signOut({
-              fetchOptions: {
-                onSuccess: () => {
-                  navigate({ to: "/login" })
-                },
-              },
-            })
-          }
-        >
+        <Button variant="outline" onClick={handleLogout}>
           logout
         </Button>
       </div>

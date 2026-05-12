@@ -1,3 +1,4 @@
+import { toast } from "sonner"
 import { createFileRoute, Link } from "@tanstack/react-router"
 
 import { Button } from "#/components/ui/button"
@@ -10,14 +11,35 @@ export const Route = createFileRoute("/post/$id/")({
 
 function RouteComponent() {
   const { id } = Route.useParams()
+  const navigate = Route.useNavigate()
+
   const getPost = useGetPostById(Number(id))
   const deletePost = useDeletePost(
     Number(id),
     Route.useRouteContext().queryClient
   )
-  const navigate = Route.useNavigate()
 
   const post = getPost.data
+
+  function handleDelete() {
+    deletePost.mutate(undefined, {
+      onSuccess: () => {
+        navigate({ to: "/post" })
+      },
+      onError: (error) => {
+        toast.error(`Failed to delete post: ${error.message}`)
+      },
+    })
+  }
+
+  // Throw to trigger error boundary if delete post failed - mutate function can't throw to the error boundary
+  if (deletePost.isError) {
+    throw new Error(
+      deletePost.error instanceof Error
+        ? deletePost.error.message
+        : "Failed to delete post"
+    )
+  }
 
   return (
     <main>
@@ -27,16 +49,7 @@ function RouteComponent() {
         </Button>
 
         <div className="space-x-2">
-          <Button
-            variant="outline"
-            onClick={() => {
-              deletePost.mutate(undefined, {
-                onSuccess: () => {
-                  navigate({ to: "/post" })
-                },
-              })
-            }}
-          >
+          <Button variant="outline" onClick={handleDelete}>
             Delete Post
           </Button>
           <Button variant="outline">

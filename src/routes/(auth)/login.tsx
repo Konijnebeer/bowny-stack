@@ -22,11 +22,13 @@ export const Route = createFileRoute("/(auth)/login")({
   validateSearch: z.object({
     location: z.string().optional(),
   }),
+  // TODO: Fix this, investigate why it does not work
   // beforeLoad: async ({ location }) => {
   //   const session = await authClient.getSession()
   //   console.log(session)
   //   if (session.data) {
   //     console.log('User is already logged in, redirecting...')
+  //     console.log(location)
   //     throw redirect({ to: (location as unknown as string) || '/' })
   //   }
   // },

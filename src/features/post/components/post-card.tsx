@@ -2,11 +2,11 @@ import { Link } from "@tanstack/react-router"
 
 import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card"
 
-import type { PostsResponse } from "#/features/post/type"
+import type { Post } from "#/features/post"
 
-function PostCard({ post }: { post: PostsResponse[number] }) {
+function PostCard({ post }: { post: Post }) {
   return (
-    <Link to="/post/$id" params={{ id: post.id }}>
+    <Link to="/post/$id" params={{ id: post.id.toString() }}>
       <Card className="hover:scale-105 hover:shadow-md">
         <CardHeader>
           <CardTitle>
