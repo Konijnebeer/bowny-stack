@@ -2,8 +2,8 @@ import { betterAuth } from "better-auth"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { tanstackStartCookies } from "better-auth/tanstack-start"
 
-import { getDB } from "@/db"
-import * as schema from "@/db/schema"
+import { getDB } from "#/db"
+import * as schema from "#/db/schema"
 
 export const auth = betterAuth({
   database: drizzleAdapter(getDB(), {
