@@ -18,9 +18,7 @@ const db = getDB()
 const getPosts = createServerFn({
   method: "GET",
 }).handler(async () => {
-  return await db.query.posts.findMany({
-    orderBy: [desc(posts.createdAt)],
-  })
+  return await db.select().from(posts).orderBy(desc(posts.createdAt))
 })
 
 export const getPostsQueryOptions = {
@@ -40,9 +38,12 @@ const getPostById = createServerFn({
 })
   .inputValidator(z.object({ id: z.number() }))
   .handler(async ({ data }) => {
-    const post = await db.query.posts.findFirst({
-      where: eq(posts.id, data.id),
-    })
+    const [post] = await db
+      .select()
+      .from(posts)
+      .where(eq(posts.id, data.id))
+      .limit(1)
+
     if (!post) {
       throw notFound()
     }
