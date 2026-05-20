@@ -2,6 +2,9 @@ import { toast } from "sonner"
 import { createFileRoute, Link } from "@tanstack/react-router"
 
 import { Button } from "#/components/ui/button"
+import { Skeleton } from "#/components/ui/skeleton"
+
+import { authClient } from "#/lib/auth-client"
 
 import { useDeletePost, useGetPostById } from "#/features/post"
 
@@ -13,16 +16,15 @@ function RouteComponent() {
   const { id } = Route.useParams()
   const navigate = Route.useNavigate()
 
+  const { data: session, isPending } = authClient.useSession()
+
   const getPost = useGetPostById(Number(id))
-  const deletePost = useDeletePost(
-    Number(id),
-    Route.useRouteContext().queryClient
-  )
+  const deletePost = useDeletePost(Route.useRouteContext().queryClient)
 
   const post = getPost.data
 
   function handleDelete() {
-    deletePost.mutate(undefined, {
+    deletePost.mutate(Number(id), {
       onSuccess: () => {
         navigate({ to: "/post" })
       },
@@ -49,14 +51,29 @@ function RouteComponent() {
         </Button>
 
         <div className="space-x-2">
-          <Button variant="outline" onClick={handleDelete}>
-            Delete Post
-          </Button>
-          <Button variant="outline">
-            <Link to="/post/$id/edit" params={{ id: post.id.toString() }}>
-              Edit Post
-            </Link>
-          </Button>
+          {isPending ? (
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-7 w-20" />
+              <Skeleton className="h-7 w-18" />
+            </div>
+          ) : session?.user.id === post.userId ? (
+            <>
+              <Button variant="outline" onClick={handleDelete}>
+                Delete Post
+              </Button>
+              <Button
+                variant="outline"
+                render={
+                  <Link
+                    to="/post/$id/edit"
+                    params={{ id: post.id.toString() }}
+                  />
+                }
+              >
+                Edit Post
+              </Button>
+            </>
+          ) : null}
         </div>
       </div>
 

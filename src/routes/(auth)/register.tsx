@@ -45,17 +45,19 @@ function RouteComponent() {
         },
         {
           onRequest: () => {
-            toast.loading("Creating account...")
+            toast.loading("Creating account...", { id: "register" })
           },
           onSuccess: () => {
             setIsSubmitting(false)
-            toast.success("Created account successfully!")
+            toast.success("Created account successfully!", { id: "register" })
             navigate({ to: "/login" })
           },
           onError: (ctx) => {
             setIsSubmitting(false)
             console.error(ctx, "Registration error")
-            toast.error(ctx.error.message || "Failed to create account")
+            toast.error(ctx.error.message || "Failed to create account", {
+              id: "register",
+            })
           },
         }
       )

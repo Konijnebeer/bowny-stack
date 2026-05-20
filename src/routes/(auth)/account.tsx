@@ -62,6 +62,14 @@ function RouteComponent() {
     })
   }
 
+  if (!accountQuery.data) {
+    return (
+      <main className="mx-auto max-w-2xl px-4 py-10">
+        <div className="text-center">No account information found.</div>
+      </main>
+    )
+  }
+
   return (
     <main className="mx-auto max-w-2xl px-4 py-10">
       <div className="flex items-end justify-between py-2">

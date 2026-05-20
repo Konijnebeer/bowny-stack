@@ -20,9 +20,11 @@ export const ensureSession = createServerFn({ method: "GET" }).handler(
 
 async function fetchAccount() {
   const { data, error } = await authClient.getSession()
-  if (error || !data || !data.user) {
-    throw new Error(error?.message || "Failed to fetch account information")
+
+  if (error) {
+    throw new Error(error.message || "Failed to fetch account information")
   }
+
   return data
 }
 

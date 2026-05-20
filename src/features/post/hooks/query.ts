@@ -186,17 +186,14 @@ const deletePost = createServerFn({
     return deleted
   })
 
-export const deletePostMutationOptions = (
-  id: number,
-  queryClient: QueryClient
-) => ({
-  mutationFn: () => deletePost({ data: { id } }),
+export const deletePostMutationOptions = (queryClient: QueryClient) => ({
+  mutationFn: (id: number) => deletePost({ data: { id } }),
   // TODO: Should be async but then the other success callback does not seem to work, now there is a very small flicker because the query has not been invalidated
   onSuccess: () => {
     queryClient.invalidateQueries({ queryKey: ["posts"] })
   },
 })
 
-export function useDeletePost(id: number, queryClient: QueryClient) {
-  return useMutation(deletePostMutationOptions(id, queryClient))
+export function useDeletePost(queryClient: QueryClient) {
+  return useMutation(deletePostMutationOptions(queryClient))
 }
