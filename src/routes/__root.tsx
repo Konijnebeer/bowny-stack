@@ -10,8 +10,11 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 
 import { Header } from "#/components/layout/header"
+import { AppSidebar } from "#/components/layout/nav/app-sidebar"
 import { ThemeProvider } from "#/components/theme-provider"
+import { SidebarInset, SidebarProvider } from "#/components/ui/sidebar"
 import { Toaster } from "#/components/ui/sonner"
+import { TooltipProvider } from "#/components/ui/tooltip"
 
 import appCss from "#/styles.css?url"
 
@@ -51,11 +54,9 @@ function RootDocument() {
         <HeadContent />
       </head>
       <body>
-        <Toaster />
-        <Header />
-        <ThemeProvider defaultTheme="system" storageKey="theme">
+        <Body>
           <Outlet />
-        </ThemeProvider>
+        </Body>
         <TanStackDevtools
           config={{
             position: "bottom-right",
@@ -74,6 +75,24 @@ function RootDocument() {
         <Scripts />
       </body>
     </html>
+  )
+}
+
+// Component for the body elements
+function Body({ children }: { children: React.ReactNode }) {
+  return (
+    <ThemeProvider defaultTheme="system" storageKey="theme">
+      <SidebarProvider>
+        <AppSidebar />
+        <SidebarInset>
+          <Toaster />
+          <TooltipProvider>
+            <Header />
+            {children}
+          </TooltipProvider>
+        </SidebarInset>
+      </SidebarProvider>
+    </ThemeProvider>
   )
 }
 

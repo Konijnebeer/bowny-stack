@@ -11,7 +11,7 @@ export const Route = createFileRoute("/post")({
 
 function RouteComponent() {
   return (
-    <main className="mx-auto max-w-2xl px-4 py-10">
+    <main className="mx-auto max-w-3xl min-w-2xl px-4 py-10">
       <Outlet />
     </main>
   )

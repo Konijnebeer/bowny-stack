@@ -24,7 +24,7 @@ export const Route = createFileRoute("/(auth)/account")({
 
 function RoutePending() {
   return (
-    <main className="mx-auto max-w-2xl px-4 py-10">
+    <main className="mx-auto max-w-3xl min-w-2xl px-4 py-10">
       <div className="flex items-end justify-between py-2">
         <Skeleton className="h-8 w-40" />
         <Skeleton className="h-8 w-20" />
@@ -37,7 +37,7 @@ function RoutePending() {
 
 function RouteError({ error }: { error: Error }) {
   return (
-    <main className="mx-auto max-w-2xl px-4 py-10">
+    <main className="mx-auto max-w-3xl min-w-2xl px-4 py-10">
       <div className="text-center">
         Error loading account information: {error.message}
       </div>
@@ -64,14 +64,14 @@ function RouteComponent() {
 
   if (!accountQuery.data) {
     return (
-      <main className="mx-auto max-w-2xl px-4 py-10">
+      <main className="mx-auto max-w-3xl min-w-2xl px-4 py-10">
         <div className="text-center">No account information found.</div>
       </main>
     )
   }
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-10">
+    <main className="mx-auto max-w-3xl min-w-2xl px-4 py-10">
       <div className="flex items-end justify-between py-2">
         <h1 className="text-2xl">Account</h1>
 
