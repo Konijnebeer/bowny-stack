@@ -52,8 +52,8 @@ function RootDocument() {
       </head>
       <body>
         <Toaster />
-        <Header />
         <ThemeProvider defaultTheme="system" storageKey="theme">
+          <Header />
           <Outlet />
         </ThemeProvider>
         <TanStackDevtools
