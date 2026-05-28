@@ -21,6 +21,11 @@ function Header() {
         nativeButton={false}
         render={<Link to="/post">Posts</Link>}
       />
+      <Button
+        variant="link"
+        nativeButton={false}
+        render={<Link to="/form">Form</Link>}
+      />
       <div className="ml-auto flex items-center gap-2 justify-self-end">
         {isPending ? (
           <Skeleton className="mx-4 h-4 w-12 bg-background" />

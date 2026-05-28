@@ -10,20 +10,31 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as PostRouteRouteImport } from './routes/post/route'
+import { Route as FormRouteRouteImport } from './routes/form/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PostIndexRouteImport } from './routes/post/index'
+import { Route as FormIndexRouteImport } from './routes/form/index'
 import { Route as PostCreateRouteImport } from './routes/post/create'
 import { Route as authRegisterRouteImport } from './routes/(auth)/register'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
 import { Route as authAccountRouteImport } from './routes/(auth)/account'
 import { Route as PostIdRouteRouteImport } from './routes/post/$id/route'
+import { Route as FormExampleRouteRouteImport } from './routes/form/example/route'
 import { Route as PostIdIndexRouteImport } from './routes/post/$id/index'
 import { Route as PostIdEditRouteImport } from './routes/post/$id/edit'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as FormExampleTextAreaIndexRouteImport } from './routes/form/example/text-area/index'
+import { Route as FormExampleSliderIndexRouteImport } from './routes/form/example/slider/index'
+import { Route as FormExampleInputIndexRouteImport } from './routes/form/example/input/index'
 
 const PostRouteRoute = PostRouteRouteImport.update({
   id: '/post',
   path: '/post',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FormRouteRoute = FormRouteRouteImport.update({
+  id: '/form',
+  path: '/form',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -35,6 +46,11 @@ const PostIndexRoute = PostIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => PostRouteRoute,
+} as any)
+const FormIndexRoute = FormIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => FormRouteRoute,
 } as any)
 const PostCreateRoute = PostCreateRouteImport.update({
   id: '/create',
@@ -61,6 +77,11 @@ const PostIdRouteRoute = PostIdRouteRouteImport.update({
   path: '/$id',
   getParentRoute: () => PostRouteRoute,
 } as any)
+const FormExampleRouteRoute = FormExampleRouteRouteImport.update({
+  id: '/example',
+  path: '/example',
+  getParentRoute: () => FormRouteRoute,
+} as any)
 const PostIdIndexRoute = PostIdIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -76,87 +97,138 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FormExampleTextAreaIndexRoute =
+  FormExampleTextAreaIndexRouteImport.update({
+    id: '/text-area/',
+    path: '/text-area/',
+    getParentRoute: () => FormExampleRouteRoute,
+  } as any)
+const FormExampleSliderIndexRoute = FormExampleSliderIndexRouteImport.update({
+  id: '/slider/',
+  path: '/slider/',
+  getParentRoute: () => FormExampleRouteRoute,
+} as any)
+const FormExampleInputIndexRoute = FormExampleInputIndexRouteImport.update({
+  id: '/input/',
+  path: '/input/',
+  getParentRoute: () => FormExampleRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/form': typeof FormRouteRouteWithChildren
   '/post': typeof PostRouteRouteWithChildren
+  '/form/example': typeof FormExampleRouteRouteWithChildren
   '/post/$id': typeof PostIdRouteRouteWithChildren
   '/account': typeof authAccountRoute
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
   '/post/create': typeof PostCreateRoute
+  '/form/': typeof FormIndexRoute
   '/post/': typeof PostIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/post/$id/edit': typeof PostIdEditRoute
   '/post/$id/': typeof PostIdIndexRoute
+  '/form/example/input/': typeof FormExampleInputIndexRoute
+  '/form/example/slider/': typeof FormExampleSliderIndexRoute
+  '/form/example/text-area/': typeof FormExampleTextAreaIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/form/example': typeof FormExampleRouteRouteWithChildren
   '/account': typeof authAccountRoute
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
   '/post/create': typeof PostCreateRoute
+  '/form': typeof FormIndexRoute
   '/post': typeof PostIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/post/$id/edit': typeof PostIdEditRoute
   '/post/$id': typeof PostIdIndexRoute
+  '/form/example/input': typeof FormExampleInputIndexRoute
+  '/form/example/slider': typeof FormExampleSliderIndexRoute
+  '/form/example/text-area': typeof FormExampleTextAreaIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/form': typeof FormRouteRouteWithChildren
   '/post': typeof PostRouteRouteWithChildren
+  '/form/example': typeof FormExampleRouteRouteWithChildren
   '/post/$id': typeof PostIdRouteRouteWithChildren
   '/(auth)/account': typeof authAccountRoute
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/register': typeof authRegisterRoute
   '/post/create': typeof PostCreateRoute
+  '/form/': typeof FormIndexRoute
   '/post/': typeof PostIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/post/$id/edit': typeof PostIdEditRoute
   '/post/$id/': typeof PostIdIndexRoute
+  '/form/example/input/': typeof FormExampleInputIndexRoute
+  '/form/example/slider/': typeof FormExampleSliderIndexRoute
+  '/form/example/text-area/': typeof FormExampleTextAreaIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/form'
     | '/post'
+    | '/form/example'
     | '/post/$id'
     | '/account'
     | '/login'
     | '/register'
     | '/post/create'
+    | '/form/'
     | '/post/'
     | '/api/auth/$'
     | '/post/$id/edit'
     | '/post/$id/'
+    | '/form/example/input/'
+    | '/form/example/slider/'
+    | '/form/example/text-area/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/form/example'
     | '/account'
     | '/login'
     | '/register'
     | '/post/create'
+    | '/form'
     | '/post'
     | '/api/auth/$'
     | '/post/$id/edit'
     | '/post/$id'
+    | '/form/example/input'
+    | '/form/example/slider'
+    | '/form/example/text-area'
   id:
     | '__root__'
     | '/'
+    | '/form'
     | '/post'
+    | '/form/example'
     | '/post/$id'
     | '/(auth)/account'
     | '/(auth)/login'
     | '/(auth)/register'
     | '/post/create'
+    | '/form/'
     | '/post/'
     | '/api/auth/$'
     | '/post/$id/edit'
     | '/post/$id/'
+    | '/form/example/input/'
+    | '/form/example/slider/'
+    | '/form/example/text-area/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  FormRouteRoute: typeof FormRouteRouteWithChildren
   PostRouteRoute: typeof PostRouteRouteWithChildren
   authAccountRoute: typeof authAccountRoute
   authLoginRoute: typeof authLoginRoute
@@ -173,6 +245,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/form': {
+      id: '/form'
+      path: '/form'
+      fullPath: '/form'
+      preLoaderRoute: typeof FormRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -186,6 +265,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/post/'
       preLoaderRoute: typeof PostIndexRouteImport
       parentRoute: typeof PostRouteRoute
+    }
+    '/form/': {
+      id: '/form/'
+      path: '/'
+      fullPath: '/form/'
+      preLoaderRoute: typeof FormIndexRouteImport
+      parentRoute: typeof FormRouteRoute
     }
     '/post/create': {
       id: '/post/create'
@@ -222,6 +308,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostIdRouteRouteImport
       parentRoute: typeof PostRouteRoute
     }
+    '/form/example': {
+      id: '/form/example'
+      path: '/example'
+      fullPath: '/form/example'
+      preLoaderRoute: typeof FormExampleRouteRouteImport
+      parentRoute: typeof FormRouteRoute
+    }
     '/post/$id/': {
       id: '/post/$id/'
       path: '/'
@@ -243,8 +336,58 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/form/example/text-area/': {
+      id: '/form/example/text-area/'
+      path: '/text-area'
+      fullPath: '/form/example/text-area/'
+      preLoaderRoute: typeof FormExampleTextAreaIndexRouteImport
+      parentRoute: typeof FormExampleRouteRoute
+    }
+    '/form/example/slider/': {
+      id: '/form/example/slider/'
+      path: '/slider'
+      fullPath: '/form/example/slider/'
+      preLoaderRoute: typeof FormExampleSliderIndexRouteImport
+      parentRoute: typeof FormExampleRouteRoute
+    }
+    '/form/example/input/': {
+      id: '/form/example/input/'
+      path: '/input'
+      fullPath: '/form/example/input/'
+      preLoaderRoute: typeof FormExampleInputIndexRouteImport
+      parentRoute: typeof FormExampleRouteRoute
+    }
   }
 }
+
+interface FormExampleRouteRouteChildren {
+  FormExampleInputIndexRoute: typeof FormExampleInputIndexRoute
+  FormExampleSliderIndexRoute: typeof FormExampleSliderIndexRoute
+  FormExampleTextAreaIndexRoute: typeof FormExampleTextAreaIndexRoute
+}
+
+const FormExampleRouteRouteChildren: FormExampleRouteRouteChildren = {
+  FormExampleInputIndexRoute: FormExampleInputIndexRoute,
+  FormExampleSliderIndexRoute: FormExampleSliderIndexRoute,
+  FormExampleTextAreaIndexRoute: FormExampleTextAreaIndexRoute,
+}
+
+const FormExampleRouteRouteWithChildren =
+  FormExampleRouteRoute._addFileChildren(FormExampleRouteRouteChildren)
+
+interface FormRouteRouteChildren {
+  FormExampleRouteRoute: typeof FormExampleRouteRouteWithChildren
+  FormIndexRoute: typeof FormIndexRoute
+}
+
+const FormRouteRouteChildren: FormRouteRouteChildren = {
+  FormExampleRouteRoute: FormExampleRouteRouteWithChildren,
+  FormIndexRoute: FormIndexRoute,
+}
+
+const FormRouteRouteWithChildren = FormRouteRoute._addFileChildren(
+  FormRouteRouteChildren,
+)
 
 interface PostIdRouteRouteChildren {
   PostIdEditRoute: typeof PostIdEditRoute
@@ -278,6 +421,7 @@ const PostRouteRouteWithChildren = PostRouteRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  FormRouteRoute: FormRouteRouteWithChildren,
   PostRouteRoute: PostRouteRouteWithChildren,
   authAccountRoute: authAccountRoute,
   authLoginRoute: authLoginRoute,
