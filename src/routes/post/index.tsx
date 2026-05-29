@@ -1,4 +1,8 @@
-import { createFileRoute, Link } from "@tanstack/react-router"
+import {
+  createFileRoute,
+  Link,
+  type ErrorComponentProps,
+} from "@tanstack/react-router"
 
 import { Button } from "#/components/ui/button"
 import { Skeleton } from "#/components/ui/skeleton"
@@ -11,12 +15,12 @@ export const Route = createFileRoute("/post/")({
   },
   pendingMs: 300,
   pendingMinMs: 200,
-  pendingComponent: () => <RoutePending />,
-  errorComponent: ({ error }) => <RouteError error={error} />,
+  pendingComponent: PendingComponent,
+  errorComponent: ErrorComponent,
   component: RouteComponent,
 })
 
-function RoutePending() {
+function PendingComponent() {
   return (
     <>
       <div className="flex items-end justify-between py-2">
@@ -32,7 +36,7 @@ function RoutePending() {
   )
 }
 
-function RouteError({ error }: { error: Error }) {
+function ErrorComponent({ error }: ErrorComponentProps) {
   return <div>Error loading posts: {error.message}</div>
 }
 
@@ -46,8 +50,12 @@ function RouteComponent() {
       <div className="flex items-end justify-between py-2">
         <h1 className="text-2xl">Posts</h1>
 
-        <Button variant="outline">
-          <Link to="/post/create">Create Post</Link>
+        <Button
+          variant="outline"
+          render={<Link to="/post/create" />}
+          nativeButton={false}
+        >
+          Create Post
         </Button>
       </div>
       {postsData.length === 0 ? (

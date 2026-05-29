@@ -47,8 +47,12 @@ function RouteComponent() {
   return (
     <>
       <div className="flex items-end justify-between py-2">
-        <Button variant="outline">
-          <Link to="/post">Back to Posts</Link>
+        <Button
+          variant="outline"
+          render={<Link to="/post" />}
+          nativeButton={false}
+        >
+          Back to Posts
         </Button>
       </div>
       <form

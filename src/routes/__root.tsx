@@ -6,6 +6,7 @@ import {
   HeadContent,
   Outlet,
   Scripts,
+  type ErrorComponentProps,
 } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 
@@ -41,7 +42,8 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     ],
   }),
   shellComponent: RootDocument,
-  notFoundComponent: notFound,
+  notFoundComponent: notFoundComponent,
+  errorComponent: ErrorComponent,
 })
 
 function RootDocument() {
@@ -77,11 +79,20 @@ function RootDocument() {
   )
 }
 
-function notFound() {
+function notFoundComponent() {
   return (
     <main className="mx-auto mt-80 flex flex-col items-center justify-center gap-4">
       <h1 className="text-8xl">404</h1>
       <p className="text-2xl">Page not found</p>
+    </main>
+  )
+}
+
+function ErrorComponent({ error }: ErrorComponentProps) {
+  return (
+    <main className="mx-auto mt-80 flex flex-col items-center justify-center gap-4">
+      <h1 className="text-8xl">Error</h1>
+      <p className="text-2xl">{error.message}</p>
     </main>
   )
 }

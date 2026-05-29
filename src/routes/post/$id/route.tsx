@@ -1,4 +1,4 @@
-import { createFileRoute, Link, Outlet } from "@tanstack/react-router"
+import { createFileRoute, Link, Outlet, type ErrorComponentProps } from "@tanstack/react-router"
 
 import { Button } from "#/components/ui/button"
 import { Skeleton } from "#/components/ui/skeleton"
@@ -6,18 +6,17 @@ import { Skeleton } from "#/components/ui/skeleton"
 import { getPostByIdQueryOptions } from "#/features/post"
 
 export const Route = createFileRoute("/post/$id")({
-  // TODO: No async needed, check others
   loader: ({ context: { queryClient }, params }) => {
     queryClient.prefetchQuery(getPostByIdQueryOptions(Number(params.id)))
   },
   pendingMs: 300,
   pendingMinMs: 200,
-  pendingComponent: () => <PostDetailSkeleton />,
-  errorComponent: ({ error }) => <PostDetailError error={error} />,
-  component: () => <Outlet />,
+  pendingComponent: PendingComponent,
+  errorComponent: ErrorComponent,
+  component: Outlet,
 })
 
-function PostDetailSkeleton() {
+function PendingComponent() {
   return (
     <div className="flex items-end justify-between py-2">
       <Skeleton className="h-8 w-32" />
@@ -26,12 +25,16 @@ function PostDetailSkeleton() {
   )
 }
 
-function PostDetailError({ error }: { error: Error }) {
+function ErrorComponent({ error }: ErrorComponentProps) {
   return (
     <>
       <div className="flex items-end justify-between py-2">
-        <Button variant="outline">
-          <Link to="/post">Back to Posts</Link>
+        <Button
+          variant="outline"
+          render={<Link to="/post" />}
+          nativeButton={false}
+        >
+          Back to Posts
         </Button>
       </div>
       <div className="text-center">

@@ -59,10 +59,12 @@ function RouteComponent() {
   return (
     <>
       <div className="flex items-end justify-between py-2">
-        <Button variant="outline">
-          <Link to="/post/$id" params={{ id: post.id.toString() }}>
-            Back to post
-          </Link>
+        <Button
+          variant="outline"
+          render={<Link to="/post/$id" params={{ id: post.id.toString() }} />}
+          nativeButton={false}
+        >
+          Back to post
         </Button>
         <Button
           type="submit"

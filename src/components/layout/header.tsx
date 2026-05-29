@@ -11,16 +11,12 @@ function Header() {
 
   return (
     <header className="flex items-center gap-4 bg-muted p-4">
-      <Button
-        variant="link"
-        nativeButton={false}
-        render={<Link to="/">Home</Link>}
-      />
-      <Button
-        variant="link"
-        nativeButton={false}
-        render={<Link to="/post">Posts</Link>}
-      />
+      <Button variant="link" nativeButton={false} render={<Link to="/" />}>
+        home
+      </Button>
+      <Button variant="link" nativeButton={false} render={<Link to="/post" />}>
+        Posts
+      </Button>
       <div className="ml-auto flex items-center gap-2 justify-self-end">
         {isPending ? (
           <Skeleton className="mx-4 h-4 w-12 bg-background" />
@@ -28,14 +24,18 @@ function Header() {
           <Button
             variant="link"
             nativeButton={false}
-            render={<Link to="/account">Account</Link>}
-          />
+            render={<Link to="/account" />}
+          >
+            Account
+          </Button>
         ) : (
           <Button
             variant="link"
             nativeButton={false}
-            render={<Link to="/login">Login</Link>}
-          />
+            render={<Link to="/login" />}
+          >
+            Login
+          </Button>
         )}
         <ModeToggle />
       </div>
