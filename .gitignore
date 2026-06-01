@@ -12,3 +12,4 @@ dist-ssr
 __unconfig*
 todos.json
 x_notes/
+dev.db
