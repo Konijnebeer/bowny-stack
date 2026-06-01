@@ -15,6 +15,10 @@ import { ThemeProvider } from "#/components/theme-provider"
 import { Toaster } from "#/components/ui/sonner"
 
 import appCss from "#/styles.css?url"
+import { authClient } from "#/features/auth/lib/auth-client"
+import { useAuthStore, type FullSession } from "#/features/auth/store"
+// import { auth } from "#/features/auth/lib/auth"
+// import { getRequestHeaders } from "@tanstack/react-start/server"
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -41,6 +45,12 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       },
     ],
   }),
+  beforeLoad: async () => {
+    const current = useAuthStore.getState().session
+    if (current !== undefined) return
+
+    await useAuthStore.getState().fetchSession()
+  },
   shellComponent: RootDocument,
   notFoundComponent: notFoundComponent,
   errorComponent: ErrorComponent,

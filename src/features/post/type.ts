@@ -20,6 +20,14 @@ export const updatePostSchema = createPostSchema.partial().extend({
   id: z.number(),
 })
 
+export const selectSchema = baseSelectSchema.extend({
+  user: z.object({
+    id: z.string(),
+    name: z.string(),
+    role: z.string().nullable(),
+  }),
+})
+
 export type CreatePostInput = z.infer<typeof createPostSchema>
 export type UpdatePostInput = z.infer<typeof updatePostSchema>
-export type Post = z.infer<typeof baseSelectSchema>
+export type Post = z.infer<typeof selectSchema>

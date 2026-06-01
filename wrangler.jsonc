@@ -3,6 +3,7 @@
   "name": "tanstack-start-app",
   "compatibility_date": "2025-09-02",
   "compatibility_flags": ["nodejs_compat"],
+  // Custom server entry only for dev, use default for build
   // "main": "@tanstack/react-start/server-entry",
   "main": "./src/server.ts",
 }

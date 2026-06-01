@@ -2,13 +2,18 @@ import { toast } from "sonner"
 import { createFileRoute, Link } from "@tanstack/react-router"
 
 import { Button } from "#/components/ui/button"
-import { Skeleton } from "#/components/ui/skeleton"
-
-import { authClient } from "#/lib/auth-client"
 
 import { useDeletePost, useGetPostById } from "#/features/post"
+import { checkRolePermission } from "#/features/auth/lib/route-guard"
+import { hasPermission } from "#/features/auth/lib/permissions"
+import { useAuthStore } from "#/features/auth/store"
 
 export const Route = createFileRoute("/post/$id/")({
+  beforeLoad: ({ location }) => {
+    checkRolePermission(location.pathname, {
+      post: ["view:any"],
+    })
+  },
   component: RouteComponent,
 })
 
@@ -16,12 +21,20 @@ function RouteComponent() {
   const { id } = Route.useParams()
   const navigate = Route.useNavigate()
 
-  const { data: session, isPending } = authClient.useSession()
-
   const getPost = useGetPostById(Number(id))
   const deletePost = useDeletePost(Route.useRouteContext().queryClient)
 
   const post = getPost.data
+
+  const canUpdateOwn = hasPermission({ post: ["update"] })
+  const canDeleteOwn = hasPermission({ post: ["delete"] })
+  const canUpdateAny = hasPermission({ post: ["update:any"] })
+  const canDeleteAny = hasPermission({ post: ["delete:any"] })
+
+  const session = useAuthStore((s) => s.session)
+  const isAuthor = session?.user.id === post.userId
+  const canEdit = canUpdateAny || (isAuthor && canUpdateOwn)
+  const canDelete = canDeleteAny || (isAuthor && canDeleteOwn)
 
   function handleDelete() {
     deletePost.mutate(Number(id), {
@@ -55,34 +68,28 @@ function RouteComponent() {
         </Button>
 
         <div className="space-x-2">
-          {isPending ? (
-            <div className="flex items-center gap-2">
-              <Skeleton className="h-7 w-20" />
-              <Skeleton className="h-7 w-18" />
-            </div>
-          ) : session?.user.id === post.userId ? (
-            <>
-              <Button variant="outline" onClick={handleDelete}>
-                Delete Post
-              </Button>
-              <Button
-                variant="outline"
-                nativeButton={false}
-                render={
-                  <Link
-                    to="/post/$id/edit"
-                    params={{ id: post.id.toString() }}
-                  />
-                }
-              >
-                Edit Post
-              </Button>
-            </>
-          ) : null}
+          {canDelete && (
+            <Button variant="outline" onClick={handleDelete}>
+              Delete Post
+            </Button>
+          )}
+          {canEdit && (
+            <Button
+              variant="outline"
+              nativeButton={false}
+              render={
+                <Link to="/post/$id/edit" params={{ id: post.id.toString() }} />
+              }
+            >
+              Edit Post
+            </Button>
+          )}
         </div>
       </div>
-
-      <h1 className="text-2xl">{post.title}</h1>
+      <div className="mb-2 flex justify-between gap-4">
+        <h1 className="text-2xl">{post.title}</h1>
+        <span>By {post.user.name ? post.user.name : "Unknown"}</span>
+      </div>
       <p>{post.content}</p>
     </main>
   )

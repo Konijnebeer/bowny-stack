@@ -8,8 +8,15 @@ import { Button } from "#/components/ui/button"
 import { Skeleton } from "#/components/ui/skeleton"
 
 import { getPostsQueryOptions, PostCard, useGetPosts } from "#/features/post"
+import { checkRolePermission } from "#/features/auth/lib/route-guard"
+import { hasPermission } from "#/features/auth/lib/permissions"
 
 export const Route = createFileRoute("/post/")({
+  beforeLoad: ({ location }) => {
+    checkRolePermission(location.pathname, {
+      post: ["view:any"],
+    })
+  },
   loader: async ({ context: { queryClient } }) => {
     queryClient.prefetchQuery(getPostsQueryOptions)
   },
@@ -42,6 +49,9 @@ function ErrorComponent({ error }: ErrorComponentProps) {
 
 function RouteComponent() {
   const posts = useGetPosts()
+  const canCreatePost = hasPermission({
+    post: ["create"],
+  })
 
   const postsData = posts.data
 
@@ -49,14 +59,15 @@ function RouteComponent() {
     <>
       <div className="flex items-end justify-between py-2">
         <h1 className="text-2xl">Posts</h1>
-
-        <Button
-          variant="outline"
-          render={<Link to="/post/create" />}
-          nativeButton={false}
-        >
-          Create Post
-        </Button>
+        {canCreatePost && (
+          <Button
+            variant="outline"
+            render={<Link to="/post/create" />}
+            nativeButton={false}
+          >
+            Create Post
+          </Button>
+        )}
       </div>
       {postsData.length === 0 ? (
         <p>No posts found.</p>

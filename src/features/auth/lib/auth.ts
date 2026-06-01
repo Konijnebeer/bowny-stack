@@ -1,9 +1,11 @@
 import { betterAuth } from "better-auth"
+import { admin as adminPlugin } from "better-auth/plugins"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import { tanstackStartCookies } from "better-auth/tanstack-start"
 
 import { getDB } from "#/db"
 import * as schema from "#/db/schema"
+import { ac, admin, user, guest } from "#/features/auth/lib/permissions"
 
 export const auth = betterAuth({
   database: drizzleAdapter(getDB(), {
@@ -19,5 +21,15 @@ export const auth = betterAuth({
     protocol: "http",
     fallback: "http://localhost:3000",
   },
-  plugins: [tanstackStartCookies()],
+  plugins: [
+    adminPlugin({
+      ac,
+      roles: {
+        guest,
+        admin,
+        user,
+      },
+    }),
+    tanstackStartCookies(),
+  ],
 })

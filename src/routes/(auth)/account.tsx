@@ -6,14 +6,16 @@ import {
 import { Button } from "#/components/ui/button"
 import { Skeleton } from "#/components/ui/skeleton"
 
-import { authClient } from "#/lib/auth-client"
-import { checkAuth } from "#/lib/route-guard"
+import { authClient } from "#/features/auth/lib/auth-client"
+import { checkAuth } from "#/features/auth/lib/route-guard"
 
 import { accountQueryOptions, useAccountQuery } from "#/features/auth"
+import { Badge } from "#/components/ui/badge"
+import { useAuthStore } from "#/features/auth/store"
 
 export const Route = createFileRoute("/(auth)/account")({
-  beforeLoad: async ({ location }) => {
-    await checkAuth(location.pathname)
+  beforeLoad: ({ location }) => {
+    checkAuth(location.pathname)
   },
   loader: async ({ context: { queryClient } }) => {
     queryClient.prefetchQuery(accountQueryOptions)
@@ -58,6 +60,7 @@ function RouteComponent() {
       fetchOptions: {
         onSuccess: async () => {
           // Make sure any data where authorization is required is cleared from the cache
+          useAuthStore.getState().setSession(undefined)
           queryClient.clear()
           navigate({ to: "/login" })
         },
@@ -84,6 +87,7 @@ function RouteComponent() {
       </div>
       <p>
         <strong>Name:</strong> {accountQuery.data.user.name}
+        <Badge className="ml-2">{accountQuery.data.user.role}</Badge>
       </p>
       <p>
         <strong>Email:</strong> {accountQuery.data.user.email}

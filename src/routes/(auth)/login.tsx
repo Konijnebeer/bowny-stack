@@ -14,9 +14,10 @@ import {
 import { FieldGroup } from "#/components/ui/field"
 import { Spinner } from "#/components/ui/spinner"
 
-import { authClient } from "#/lib/auth-client"
+import { authClient } from "#/features/auth/lib/auth-client"
 
 import { useAccountForm, UserLoginSchema } from "#/features/auth"
+import { useAuthStore } from "#/features/auth/store"
 
 export const Route = createFileRoute("/(auth)/login")({
   validateSearch: z.object({
@@ -62,6 +63,7 @@ function RouteComponent() {
           },
           onSuccess: () => {
             setIsSubmitting(false)
+            useAuthStore.getState().setSession(undefined)
             toast.success("Logged in successfully!", { id: "sign-in" })
             navigate({ to: location || "/" })
           },

@@ -1,6 +1,12 @@
 import { Link } from "@tanstack/react-router"
 
-import { Card, CardContent, CardHeader, CardTitle } from "#/components/ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "#/components/ui/card"
 
 import type { Post } from "#/features/post"
 
@@ -12,6 +18,11 @@ function PostCard({ post }: { post: Post }) {
           <CardTitle>
             <h2>{post.title}</h2>
           </CardTitle>
+          <CardDescription>
+            <p className="flex items-center gap-2">
+              By {post.user.name ? post.user.name : "Unknown"}
+            </p>
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <p>{new Date(post.createdAt).toLocaleDateString()}</p>

@@ -4,7 +4,7 @@ import { ModeToggle } from "#/components/mode-toggle"
 import { Button } from "#/components/ui/button"
 import { Skeleton } from "#/components/ui/skeleton"
 
-import { authClient } from "#/lib/auth-client"
+import { authClient } from "#/features/auth/lib/auth-client"
 
 function Header() {
   const { data: session, isPending } = authClient.useSession()

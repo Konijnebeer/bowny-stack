@@ -10,6 +10,7 @@ import { posts } from "#/features/post/schema"
 import type { UpdatePostInput } from "#/features/post/type"
 import { createPostSchema, updatePostSchema } from "#/features/post/type"
 import { authMiddleware } from "#/middleware/auth"
+import { roleMiddleware } from "#/middleware/role"
 
 const db = getDB()
 
@@ -18,7 +19,18 @@ const db = getDB()
 const getPosts = createServerFn({
   method: "GET",
 }).handler(async () => {
-  return await db.select().from(posts).orderBy(desc(posts.createdAt))
+  return await db.query.posts.findMany({
+    orderBy: [desc(posts.createdAt)],
+    with: {
+      user: {
+        columns: {
+          id: true,
+          name: true,
+          role: true,
+        },
+      },
+    },
+  })
 })
 
 export const getPostsQueryOptions = {
@@ -38,11 +50,18 @@ const getPostById = createServerFn({
 })
   .inputValidator(z.object({ id: z.number() }))
   .handler(async ({ data }) => {
-    const [post] = await db
-      .select()
-      .from(posts)
-      .where(eq(posts.id, data.id))
-      .limit(1)
+    const post = await db.query.posts.findFirst({
+      where: eq(posts.id, data.id),
+      with: {
+        user: {
+          columns: {
+            id: true,
+            name: true,
+            role: true,
+          },
+        },
+      },
+    })
 
     if (!post) {
       throw notFound()
@@ -67,7 +86,7 @@ const createPost = createServerFn({
   method: "POST",
 })
   .inputValidator(createPostSchema)
-  .middleware([authMiddleware])
+  .middleware([roleMiddleware({ post: ["create"] })])
   .handler(async ({ data, context }) => {
     const { session } = context
     const [post] = await db
@@ -128,6 +147,7 @@ export function useCreatePost(queryClient: QueryClient) {
 
 const updatePost = createServerFn({ method: "POST" })
   .inputValidator(updatePostSchema)
+  // .middleware([roleMiddleware({ post: ["update"] })])
   .middleware([authMiddleware])
   .handler(async ({ data, context }) => {
     const { session } = context

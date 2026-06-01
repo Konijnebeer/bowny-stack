@@ -6,8 +6,14 @@ import { FieldGroup } from "#/components/ui/field"
 import { Spinner } from "#/components/ui/spinner"
 
 import { createPostSchema, useCreatePost, usePostForm } from "#/features/post"
+import { checkRolePermission } from "#/features/auth/lib/route-guard"
 
 export const Route = createFileRoute("/post/create")({
+  beforeLoad: ({ location }) => {
+    checkRolePermission(location.pathname, {
+      post: ["create"],
+    })
+  },
   component: RouteComponent,
 })
 

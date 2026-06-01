@@ -11,8 +11,14 @@ import {
   usePostForm,
   useUpdatePost,
 } from "#/features/post"
+import { checkRolePermission } from "#/features/auth/lib/route-guard"
 
 export const Route = createFileRoute("/post/$id/edit")({
+  beforeLoad: ({ location }) => {
+    checkRolePermission(location.pathname, {
+      post: ["update"],
+    })
+  },
   component: RouteComponent,
 })
 

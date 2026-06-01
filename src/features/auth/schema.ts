@@ -12,6 +12,10 @@ export const users = pgTable("users", {
     .defaultNow()
     .$onUpdate(() => /* @__PURE__ */ new Date())
     .notNull(),
+  role: text("role"),
+  banned: boolean("banned").default(false),
+  banReason: text("ban_reason"),
+  banExpires: timestamp("ban_expires"),
 })
 
 export const sessions = pgTable(
@@ -29,8 +33,9 @@ export const sessions = pgTable(
     userId: text("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
+    impersonatedBy: text("impersonated_by"),
   },
-  (table) => [index("session_userId_idx").on(table.userId)]
+  (table) => [index("sessions_userId_idx").on(table.userId)]
 )
 
 export const accounts = pgTable(
@@ -54,7 +59,7 @@ export const accounts = pgTable(
       .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
   },
-  (table) => [index("account_userId_idx").on(table.userId)]
+  (table) => [index("accounts_userId_idx").on(table.userId)]
 )
 
 export const verifications = pgTable(
@@ -70,23 +75,23 @@ export const verifications = pgTable(
       .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
   },
-  (table) => [index("verification_identifier_idx").on(table.identifier)]
+  (table) => [index("verifications_identifier_idx").on(table.identifier)]
 )
 
-export const userRelations = relations(users, ({ many }) => ({
+export const usersRelations = relations(users, ({ many }) => ({
   sessions: many(sessions),
   accounts: many(accounts),
 }))
 
-export const sessionRelations = relations(sessions, ({ one }) => ({
-  user: one(users, {
+export const sessionsRelations = relations(sessions, ({ one }) => ({
+  users: one(users, {
     fields: [sessions.userId],
     references: [users.id],
   }),
 }))
 
-export const accountRelations = relations(accounts, ({ one }) => ({
-  user: one(users, {
+export const accountsRelations = relations(accounts, ({ one }) => ({
+  users: one(users, {
     fields: [accounts.userId],
     references: [users.id],
   }),
