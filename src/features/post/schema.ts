@@ -1,15 +1,17 @@
-import { relations } from "drizzle-orm"
-import { pgTable, serial, text, timestamp } from "drizzle-orm/pg-core"
+import { relations, sql } from "drizzle-orm"
+import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core"
 
 import { users } from "#/features/auth/schema"
 
-export const posts = pgTable("posts", {
-  id: serial().primaryKey(),
-  title: text().notNull(),
-  content: text().notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
+export const posts = sqliteTable("posts", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
+    .notNull(),
+  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
     .$onUpdate(() => new Date())
     .notNull(),
   userId: text("user_id")
