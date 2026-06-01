@@ -97,35 +97,6 @@ export function useCreatePost(queryClient: QueryClient) {
 
 // --- Update ---
 
-// const updatePost = createServerFn({
-//   method: 'POST',
-// })
-//   .inputValidator(updatePostSchema)
-//   .middleware([authMiddleware])
-//   .handler(async ({ data, context }) => {
-//     const { session } = context
-
-//     const post = await db.query.posts.findFirst({
-//       where: eq(posts.id, data.id),
-//     })
-
-//     if (!post) {
-//       throw new Error('Post not found')
-//     }
-//     if (post.userId !== session.user.id) {
-//       throw new Error('Unauthorized')
-//     }
-
-//     return await db
-//       .update(posts)
-//       .set({
-//         title: data.title,
-//         content: data.content,
-//       })
-//       .where(eq(posts.id, data.id))
-//       .returning()
-//   })
-
 const updatePost = createServerFn({ method: "POST" })
   .inputValidator(updatePostSchema)
   .middleware([authMiddleware])
