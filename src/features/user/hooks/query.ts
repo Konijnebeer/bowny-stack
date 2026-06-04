@@ -9,7 +9,8 @@ import {
 import { createServerFn } from "@tanstack/react-start"
 import { getRequest } from "@tanstack/react-start/server"
 
-import { auth, users } from "#/features/auth"
+import { users } from "#/features/auth/schema"
+import { auth } from "#/features/auth/lib/auth"
 
 import { getDB } from "#/db"
 import type { GetUsersInput, Role } from "#/features/user/schema"

@@ -57,13 +57,13 @@ export function hasPermission(
   })
 }
 
-export function hasRole(
+export function useHasRole(
   roles: Parameters<typeof authClient.admin.checkRolePermission>[0]["role"][]
 ): { hasRole: boolean; isLoading: boolean } {
-  const isLoading = useAuthStore.getState().isLoading
-  const session = useAuthStore.getState().session
-  const role = session?.user.role
-  if (!role) return { hasRole: false, isLoading: isLoading }
+  const isLoading = useAuthStore((s) => s.isLoading)
 
-  return { hasRole: roles.includes(role), isLoading: isLoading }
+  const role = useAuthStore((s) => s.session?.user.role)
+  const hasRole = !!role && roles.includes(role)
+
+  return { hasRole, isLoading }
 }

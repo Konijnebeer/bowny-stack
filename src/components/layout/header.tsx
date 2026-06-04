@@ -4,12 +4,12 @@ import { ModeToggle } from "#/components/mode-toggle"
 import { Button } from "#/components/ui/button"
 import { Skeleton } from "#/components/ui/skeleton"
 
-import { authClient, hasRole } from "#/features/auth"
+import { authClient, useHasRole } from "#/features/auth"
 
 function Header() {
   const { data: session, isPending } = authClient.useSession()
 
-  const { hasRole: isAdmin } = hasRole(["admin"])
+  const { hasRole: isAdmin } = useHasRole(["admin"])
 
   return (
     <header className="flex items-center gap-4 bg-muted p-4">
