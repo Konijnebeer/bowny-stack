@@ -1,4 +1,5 @@
-import { createFileRoute, Link, Outlet, type ErrorComponentProps } from "@tanstack/react-router"
+import type { ErrorComponentProps } from "@tanstack/react-router"
+import { createFileRoute, Link, Outlet } from "@tanstack/react-router"
 
 import { Button } from "#/components/ui/button"
 import { Skeleton } from "#/components/ui/skeleton"

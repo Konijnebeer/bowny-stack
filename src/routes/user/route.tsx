@@ -1,10 +1,10 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router"
 
-import { checkAuth } from "#/features/auth"
+import { checkRole } from "#/features/auth"
 
-export const Route = createFileRoute("/post")({
+export const Route = createFileRoute("/user")({
   beforeLoad: async ({ location }) => {
-    await checkAuth(location.pathname)
+    await checkRole(location.pathname, ["admin"])
   },
   component: RouteComponent,
 })

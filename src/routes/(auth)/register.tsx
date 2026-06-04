@@ -13,9 +13,7 @@ import {
 import { FieldGroup } from "#/components/ui/field"
 import { Spinner } from "#/components/ui/spinner"
 
-import { authClient } from "#/features/auth/lib/auth-client"
-
-import { useAccountForm, UserRegisterSchema } from "#/features/auth"
+import { authClient, useAccountForm, UserRegisterSchema } from "#/features/auth"
 
 export const Route = createFileRoute("/(auth)/register")({
   component: RouteComponent,

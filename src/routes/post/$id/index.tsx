@@ -3,14 +3,16 @@ import { createFileRoute, Link } from "@tanstack/react-router"
 
 import { Button } from "#/components/ui/button"
 
+import {
+  checkRolePermission,
+  hasPermission,
+  useAuthStore,
+} from "#/features/auth"
 import { useDeletePost, useGetPostById } from "#/features/post"
-import { checkRolePermission } from "#/features/auth/lib/route-guard"
-import { hasPermission } from "#/features/auth/lib/permissions"
-import { useAuthStore } from "#/features/auth/store"
 
 export const Route = createFileRoute("/post/$id/")({
-  beforeLoad: ({ location }) => {
-    checkRolePermission(location.pathname, {
+  beforeLoad: async ({ location }) => {
+    await checkRolePermission(location.pathname, {
       post: ["view:any"],
     })
   },

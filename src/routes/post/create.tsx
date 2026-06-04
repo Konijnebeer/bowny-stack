@@ -5,12 +5,12 @@ import { Button } from "#/components/ui/button"
 import { FieldGroup } from "#/components/ui/field"
 import { Spinner } from "#/components/ui/spinner"
 
+import { checkRolePermission } from "#/features/auth"
 import { createPostSchema, useCreatePost, usePostForm } from "#/features/post"
-import { checkRolePermission } from "#/features/auth/lib/route-guard"
 
 export const Route = createFileRoute("/post/create")({
-  beforeLoad: ({ location }) => {
-    checkRolePermission(location.pathname, {
+  beforeLoad: async ({ location }) => {
+    await checkRolePermission(location.pathname, {
       post: ["create"],
     })
   },

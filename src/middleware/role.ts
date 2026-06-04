@@ -1,16 +1,38 @@
+import { redirect } from "@tanstack/react-router"
 import { createMiddleware } from "@tanstack/react-start"
-import { auth } from "#/features/auth/lib/auth"
+
+import type { authClient } from "#/features/auth"
+import { auth } from "#/features/auth"
+
 import { authMiddleware } from "./auth"
-import type { authClient } from "#/features/auth/lib/auth-client"
 
 type Permissions = Parameters<
-    typeof authClient.admin.checkRolePermission
-  >[0]["permissions"]
+  typeof authClient.admin.checkRolePermission
+>[0]["permissions"]
 
-export function roleMiddleware(permissions: Permissions) {
+export function roleMiddleware(
+  permissions: Permissions,
+  adminPermissions?: Permissions
+) {
   return createMiddleware({ type: "function" })
     .middleware([authMiddleware])
     .server(async ({ next, context }) => {
+      if (adminPermissions) {
+        const adminGranted = await auth.api.userHasPermission({
+          body: {
+            userId: context.session.user.id,
+            permissions: adminPermissions,
+          },
+        })
+        if (adminGranted.success) {
+          return await next({
+            context: {
+              granted: true,
+            },
+          })
+        }
+      }
+
       const granted = await auth.api.userHasPermission({
         body: {
           userId: context.session.user.id,
@@ -18,10 +40,14 @@ export function roleMiddleware(permissions: Permissions) {
         },
       })
 
-      if (!granted) {
-        throw new Error("Forbidden")
+      if (!granted.success) {
+        throw redirect({ to: "/login" })
       }
 
-      return await next()
+      return await next({
+        context: {
+          granted: true,
+        },
+      })
     })
 }

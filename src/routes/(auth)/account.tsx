@@ -1,21 +1,21 @@
-import {
-  createFileRoute,
-  type ErrorComponentProps,
-} from "@tanstack/react-router"
+import type { ErrorComponentProps } from "@tanstack/react-router"
+import { createFileRoute } from "@tanstack/react-router"
 
+import { Badge } from "#/components/ui/badge"
 import { Button } from "#/components/ui/button"
 import { Skeleton } from "#/components/ui/skeleton"
 
-import { authClient } from "#/features/auth/lib/auth-client"
-import { checkAuth } from "#/features/auth/lib/route-guard"
-
-import { accountQueryOptions, useAccountQuery } from "#/features/auth"
-import { Badge } from "#/components/ui/badge"
-import { useAuthStore } from "#/features/auth/store"
+import {
+  accountQueryOptions,
+  authClient,
+  checkAuth,
+  useAccountQuery,
+  useAuthStore,
+} from "#/features/auth"
 
 export const Route = createFileRoute("/(auth)/account")({
-  beforeLoad: ({ location }) => {
-    checkAuth(location.pathname)
+  beforeLoad: async ({ location }) => {
+    await checkAuth(location.pathname)
   },
   loader: async ({ context: { queryClient } }) => {
     queryClient.prefetchQuery(accountQueryOptions)
@@ -59,8 +59,9 @@ function RouteComponent() {
     authClient.signOut({
       fetchOptions: {
         onSuccess: async () => {
+          // Clear the session in the auth store
+          useAuthStore.getState().setSession(null)
           // Make sure any data where authorization is required is cleared from the cache
-          useAuthStore.getState().setSession(undefined)
           queryClient.clear()
           navigate({ to: "/login" })
         },
@@ -95,11 +96,17 @@ function RouteComponent() {
       <div className="flex gap-4 pt-4">
         <p>
           <strong>Created At:</strong>{" "}
-          {new Date(accountQuery.data.user.createdAt).toLocaleDateString()}
+          {new Date(accountQuery.data.user.createdAt).toLocaleDateString(
+            "en-UK",
+            { year: "numeric", month: "short", day: "numeric" }
+          )}
         </p>
         <p>
           <strong>Updated At:</strong>{" "}
-          {new Date(accountQuery.data.user.updatedAt).toLocaleDateString()}
+          {new Date(accountQuery.data.user.updatedAt).toLocaleDateString(
+            "en-UK",
+            { year: "numeric", month: "short", day: "numeric" }
+          )}
         </p>
       </div>
       <p>

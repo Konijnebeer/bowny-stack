@@ -1,7 +1,9 @@
 import { createAccessControl } from "better-auth/plugins/access"
-import { defaultStatements, adminAc } from "better-auth/plugins/admin/access"
+import { adminAc, defaultStatements } from "better-auth/plugins/admin/access"
+
+import { useAuthStore } from "#/features/auth/store"
+
 import { authClient } from "./auth-client"
-import { useAuthStore } from "../store"
 
 const statement = {
   ...defaultStatements,
@@ -44,8 +46,8 @@ export function hasPermission(
     typeof authClient.admin.checkRolePermission
   >[0]["permissions"]
 ): boolean {
-  const session = useAuthStore((s) => s.session)
-  const role = session?.user?.role
+  const session = useAuthStore.getState().session
+  const role = session?.user.role
 
   if (!role) return false
 
@@ -53,4 +55,15 @@ export function hasPermission(
     permissions,
     role,
   })
+}
+
+export function hasRole(
+  roles: Parameters<typeof authClient.admin.checkRolePermission>[0]["role"][]
+): { hasRole: boolean; isLoading: boolean } {
+  const isLoading = useAuthStore.getState().isLoading
+  const session = useAuthStore.getState().session
+  const role = session?.user.role
+  if (!role) return { hasRole: false, isLoading: isLoading }
+
+  return { hasRole: roles.includes(role), isLoading: isLoading }
 }

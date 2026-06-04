@@ -4,10 +4,12 @@ import { ModeToggle } from "#/components/mode-toggle"
 import { Button } from "#/components/ui/button"
 import { Skeleton } from "#/components/ui/skeleton"
 
-import { authClient } from "#/features/auth/lib/auth-client"
+import { authClient, hasRole } from "#/features/auth"
 
 function Header() {
   const { data: session, isPending } = authClient.useSession()
+
+  const { hasRole: isAdmin } = hasRole(["admin"])
 
   return (
     <header className="flex items-center gap-4 bg-muted p-4">
@@ -17,6 +19,15 @@ function Header() {
       <Button variant="link" nativeButton={false} render={<Link to="/post" />}>
         Posts
       </Button>
+      {isAdmin && (
+        <Button
+          variant="link"
+          nativeButton={false}
+          render={<Link to="/user" />}
+        >
+          Users
+        </Button>
+      )}
       <div className="ml-auto flex items-center gap-2 justify-self-end">
         {isPending ? (
           <Skeleton className="mx-4 h-4 w-12 bg-background" />

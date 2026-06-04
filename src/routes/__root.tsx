@@ -1,12 +1,12 @@
 import { TanStackDevtools } from "@tanstack/react-devtools"
 import type { QueryClient } from "@tanstack/react-query"
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools"
+import type { ErrorComponentProps } from "@tanstack/react-router"
 import {
   createRootRouteWithContext,
   HeadContent,
   Outlet,
   Scripts,
-  type ErrorComponentProps,
 } from "@tanstack/react-router"
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools"
 
@@ -14,11 +14,9 @@ import { Header } from "#/components/layout/header"
 import { ThemeProvider } from "#/components/theme-provider"
 import { Toaster } from "#/components/ui/sonner"
 
+import { useAuthStore } from "#/features/auth"
+
 import appCss from "#/styles.css?url"
-import { authClient } from "#/features/auth/lib/auth-client"
-import { useAuthStore, type FullSession } from "#/features/auth/store"
-// import { auth } from "#/features/auth/lib/auth"
-// import { getRequestHeaders } from "@tanstack/react-start/server"
 
 interface MyRouterContext {
   queryClient: QueryClient

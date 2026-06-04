@@ -1,4 +1,4 @@
-import { and, desc, eq } from "drizzle-orm"
+import { desc, eq } from "drizzle-orm"
 import z from "zod"
 import type { QueryClient } from "@tanstack/react-query"
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query"
@@ -9,7 +9,6 @@ import { getDB } from "#/db"
 import { posts } from "#/features/post/schema"
 import type { UpdatePostInput } from "#/features/post/type"
 import { createPostSchema, updatePostSchema } from "#/features/post/type"
-import { authMiddleware } from "#/middleware/auth"
 import { roleMiddleware } from "#/middleware/role"
 
 const db = getDB()
@@ -114,51 +113,17 @@ export function useCreatePost(queryClient: QueryClient) {
   })
 }
 
-// --- Update ---
-
-// const updatePost = createServerFn({
-//   method: 'POST',
-// })
-//   .inputValidator(updatePostSchema)
-//   .middleware([authMiddleware])
-//   .handler(async ({ data, context }) => {
-//     const { session } = context
-
-//     const post = await db.query.posts.findFirst({
-//       where: eq(posts.id, data.id),
-//     })
-
-//     if (!post) {
-//       throw new Error('Post not found')
-//     }
-//     if (post.userId !== session.user.id) {
-//       throw new Error('Unauthorized')
-//     }
-
-//     return await db
-//       .update(posts)
-//       .set({
-//         title: data.title,
-//         content: data.content,
-//       })
-//       .where(eq(posts.id, data.id))
-//       .returning()
-//   })
-
 const updatePost = createServerFn({ method: "POST" })
   .inputValidator(updatePostSchema)
-  // .middleware([roleMiddleware({ post: ["update"] })])
-  .middleware([authMiddleware])
-  .handler(async ({ data, context }) => {
-    const { session } = context
-
+  .middleware([roleMiddleware({ post: ["update"] }, { post: ["update:any"] })])
+  .handler(async ({ data }) => {
     const [post] = await db
       .update(posts)
       .set({
         title: data.title,
         content: data.content,
       })
-      .where(and(eq(posts.id, data.id), eq(posts.userId, session.user.id)))
+      .where(eq(posts.id, data.id))
       .returning()
 
     if (!post) {
@@ -190,13 +155,11 @@ const deletePost = createServerFn({
   method: "POST",
 })
   .inputValidator(z.object({ id: z.number() }))
-  .middleware([authMiddleware])
-  .handler(async ({ data, context }) => {
-    const { session } = context
-
+  .middleware([roleMiddleware({ post: ["delete"] }, { post: ["delete:any"] })])
+  .handler(async ({ data }) => {
     const [deleted] = await db
       .delete(posts)
-      .where(and(eq(posts.id, data.id), eq(posts.userId, session.user.id)))
+      .where(eq(posts.id, data.id))
       .returning()
 
     if (!deleted) {

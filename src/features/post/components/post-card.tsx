@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "#/components/ui/card"
 
-import type { Post } from "#/features/post"
+import type { Post } from "#/features/post/type"
 
 function PostCard({ post }: { post: Post }) {
   return (
@@ -25,7 +25,13 @@ function PostCard({ post }: { post: Post }) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <p>{new Date(post.createdAt).toLocaleDateString()}</p>
+          <p>
+            {new Date(post.createdAt).toLocaleDateString("en-UK", {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            })}
+          </p>
         </CardContent>
       </Card>
     </Link>

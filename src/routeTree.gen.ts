@@ -9,9 +9,12 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as UserRouteRouteImport } from './routes/user/route'
 import { Route as PostRouteRouteImport } from './routes/post/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as UserIndexRouteImport } from './routes/user/index'
 import { Route as PostIndexRouteImport } from './routes/post/index'
+import { Route as UserIdRouteImport } from './routes/user/$id'
 import { Route as PostCreateRouteImport } from './routes/post/create'
 import { Route as authRegisterRouteImport } from './routes/(auth)/register'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
@@ -21,6 +24,11 @@ import { Route as PostIdIndexRouteImport } from './routes/post/$id/index'
 import { Route as PostIdEditRouteImport } from './routes/post/$id/edit'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
+const UserRouteRoute = UserRouteRouteImport.update({
+  id: '/user',
+  path: '/user',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PostRouteRoute = PostRouteRouteImport.update({
   id: '/post',
   path: '/post',
@@ -31,10 +39,20 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UserIndexRoute = UserIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => UserRouteRoute,
+} as any)
 const PostIndexRoute = PostIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => PostRouteRoute,
+} as any)
+const UserIdRoute = UserIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => UserRouteRoute,
 } as any)
 const PostCreateRoute = PostCreateRouteImport.update({
   id: '/create',
@@ -80,12 +98,15 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/post': typeof PostRouteRouteWithChildren
+  '/user': typeof UserRouteRouteWithChildren
   '/post/$id': typeof PostIdRouteRouteWithChildren
   '/account': typeof authAccountRoute
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
   '/post/create': typeof PostCreateRoute
+  '/user/$id': typeof UserIdRoute
   '/post/': typeof PostIndexRoute
+  '/user/': typeof UserIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/post/$id/edit': typeof PostIdEditRoute
   '/post/$id/': typeof PostIdIndexRoute
@@ -96,7 +117,9 @@ export interface FileRoutesByTo {
   '/login': typeof authLoginRoute
   '/register': typeof authRegisterRoute
   '/post/create': typeof PostCreateRoute
+  '/user/$id': typeof UserIdRoute
   '/post': typeof PostIndexRoute
+  '/user': typeof UserIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/post/$id/edit': typeof PostIdEditRoute
   '/post/$id': typeof PostIdIndexRoute
@@ -105,12 +128,15 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/post': typeof PostRouteRouteWithChildren
+  '/user': typeof UserRouteRouteWithChildren
   '/post/$id': typeof PostIdRouteRouteWithChildren
   '/(auth)/account': typeof authAccountRoute
   '/(auth)/login': typeof authLoginRoute
   '/(auth)/register': typeof authRegisterRoute
   '/post/create': typeof PostCreateRoute
+  '/user/$id': typeof UserIdRoute
   '/post/': typeof PostIndexRoute
+  '/user/': typeof UserIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/post/$id/edit': typeof PostIdEditRoute
   '/post/$id/': typeof PostIdIndexRoute
@@ -120,12 +146,15 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/post'
+    | '/user'
     | '/post/$id'
     | '/account'
     | '/login'
     | '/register'
     | '/post/create'
+    | '/user/$id'
     | '/post/'
+    | '/user/'
     | '/api/auth/$'
     | '/post/$id/edit'
     | '/post/$id/'
@@ -136,7 +165,9 @@ export interface FileRouteTypes {
     | '/login'
     | '/register'
     | '/post/create'
+    | '/user/$id'
     | '/post'
+    | '/user'
     | '/api/auth/$'
     | '/post/$id/edit'
     | '/post/$id'
@@ -144,12 +175,15 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/post'
+    | '/user'
     | '/post/$id'
     | '/(auth)/account'
     | '/(auth)/login'
     | '/(auth)/register'
     | '/post/create'
+    | '/user/$id'
     | '/post/'
+    | '/user/'
     | '/api/auth/$'
     | '/post/$id/edit'
     | '/post/$id/'
@@ -158,6 +192,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   PostRouteRoute: typeof PostRouteRouteWithChildren
+  UserRouteRoute: typeof UserRouteRouteWithChildren
   authAccountRoute: typeof authAccountRoute
   authLoginRoute: typeof authLoginRoute
   authRegisterRoute: typeof authRegisterRoute
@@ -166,6 +201,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/user': {
+      id: '/user'
+      path: '/user'
+      fullPath: '/user'
+      preLoaderRoute: typeof UserRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/post': {
       id: '/post'
       path: '/post'
@@ -180,12 +222,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/user/': {
+      id: '/user/'
+      path: '/'
+      fullPath: '/user/'
+      preLoaderRoute: typeof UserIndexRouteImport
+      parentRoute: typeof UserRouteRoute
+    }
     '/post/': {
       id: '/post/'
       path: '/'
       fullPath: '/post/'
       preLoaderRoute: typeof PostIndexRouteImport
       parentRoute: typeof PostRouteRoute
+    }
+    '/user/$id': {
+      id: '/user/$id'
+      path: '/$id'
+      fullPath: '/user/$id'
+      preLoaderRoute: typeof UserIdRouteImport
+      parentRoute: typeof UserRouteRoute
     }
     '/post/create': {
       id: '/post/create'
@@ -276,9 +332,24 @@ const PostRouteRouteWithChildren = PostRouteRoute._addFileChildren(
   PostRouteRouteChildren,
 )
 
+interface UserRouteRouteChildren {
+  UserIdRoute: typeof UserIdRoute
+  UserIndexRoute: typeof UserIndexRoute
+}
+
+const UserRouteRouteChildren: UserRouteRouteChildren = {
+  UserIdRoute: UserIdRoute,
+  UserIndexRoute: UserIndexRoute,
+}
+
+const UserRouteRouteWithChildren = UserRouteRoute._addFileChildren(
+  UserRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   PostRouteRoute: PostRouteRouteWithChildren,
+  UserRouteRoute: UserRouteRouteWithChildren,
   authAccountRoute: authAccountRoute,
   authLoginRoute: authLoginRoute,
   authRegisterRoute: authRegisterRoute,

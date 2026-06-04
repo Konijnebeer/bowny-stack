@@ -1,19 +1,15 @@
-import {
-  createFileRoute,
-  Link,
-  type ErrorComponentProps,
-} from "@tanstack/react-router"
+import type { ErrorComponentProps } from "@tanstack/react-router"
+import { createFileRoute, Link } from "@tanstack/react-router"
 
 import { Button } from "#/components/ui/button"
 import { Skeleton } from "#/components/ui/skeleton"
 
+import { checkRolePermission, hasPermission } from "#/features/auth"
 import { getPostsQueryOptions, PostCard, useGetPosts } from "#/features/post"
-import { checkRolePermission } from "#/features/auth/lib/route-guard"
-import { hasPermission } from "#/features/auth/lib/permissions"
 
 export const Route = createFileRoute("/post/")({
-  beforeLoad: ({ location }) => {
-    checkRolePermission(location.pathname, {
+  beforeLoad: async ({ location }) => {
+    await checkRolePermission(location.pathname, {
       post: ["view:any"],
     })
   },
