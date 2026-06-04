@@ -9,15 +9,6 @@ import neon from "./neon-vite-plugin.ts"
 
 const config = defineConfig({
   resolve: { tsconfigPaths: true },
-  // testing if the bottom 2 help
-  // optimizeDeps: {
-  //   exclude: ['@tanstack/react-start', '@tanstack/start-server-core'],
-  // },
-  // ssr: {
-  //   optimizeDeps: {
-  //     exclude: ['@tanstack/react-start', '@tanstack/start-server-core'],
-  //   },
-  // },
   plugins: [
     devtools(),
     cloudflare({ viteEnvironment: { name: "ssr" } }),

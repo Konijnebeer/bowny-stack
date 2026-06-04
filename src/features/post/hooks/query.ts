@@ -11,13 +11,12 @@ import type { UpdatePostInput } from "#/features/post/type"
 import { createPostSchema, updatePostSchema } from "#/features/post/type"
 import { authMiddleware } from "#/middleware/auth"
 
-const db = getDB()
-
 // --- Get all ---
 
 const getPosts = createServerFn({
   method: "GET",
 }).handler(async () => {
+  const db = getDB()
   return await db.select().from(posts).orderBy(desc(posts.createdAt))
 })
 
@@ -38,6 +37,7 @@ const getPostById = createServerFn({
 })
   .inputValidator(z.object({ id: z.number() }))
   .handler(async ({ data }) => {
+    const db = getDB()
     const [post] = await db
       .select()
       .from(posts)
@@ -70,6 +70,8 @@ const createPost = createServerFn({
   .middleware([authMiddleware])
   .handler(async ({ data, context }) => {
     const { session } = context
+    const db = getDB()
+
     const [post] = await db
       .insert(posts)
       .values({
@@ -103,6 +105,7 @@ const updatePost = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { session } = context
 
+    const db = getDB()
     const [post] = await db
       .update(posts)
       .set({
@@ -145,6 +148,7 @@ const deletePost = createServerFn({
   .handler(async ({ data, context }) => {
     const { session } = context
 
+    const db = getDB()
     const [deleted] = await db
       .delete(posts)
       .where(and(eq(posts.id, data.id), eq(posts.userId, session.user.id)))

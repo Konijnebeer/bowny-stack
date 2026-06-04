@@ -10,7 +10,7 @@ import { Skeleton } from "#/components/ui/skeleton"
 import { getPostsQueryOptions, PostCard, useGetPosts } from "#/features/post"
 
 export const Route = createFileRoute("/post/")({
-  loader: async ({ context: { queryClient } }) => {
+  loader: ({ context: { queryClient } }) => {
     queryClient.prefetchQuery(getPostsQueryOptions)
   },
   pendingMs: 300,
