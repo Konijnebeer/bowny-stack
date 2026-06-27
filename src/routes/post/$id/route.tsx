@@ -1,4 +1,5 @@
-import { createFileRoute, Link, Outlet, type ErrorComponentProps } from "@tanstack/react-router"
+import type { ErrorComponentProps } from "@tanstack/react-router"
+import { createFileRoute, Link, Outlet } from "@tanstack/react-router"
 
 import { Button } from "#/components/ui/button"
 import { Skeleton } from "#/components/ui/skeleton"
@@ -7,7 +8,9 @@ import { getPostByIdQueryOptions } from "#/features/post"
 
 export const Route = createFileRoute("/post/$id")({
   loader: ({ context: { queryClient }, params }) => {
-    queryClient.prefetchQuery(getPostByIdQueryOptions(Number(params.id)))
+    queryClient.prefetchQuery(
+      getPostByIdQueryOptions({ id: Number(params.id) })
+    )
   },
   pendingMs: 300,
   pendingMinMs: 200,

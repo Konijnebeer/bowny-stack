@@ -1,14 +1,22 @@
 import { and, desc, eq } from "drizzle-orm"
-import z from "zod"
 import type { QueryClient } from "@tanstack/react-query"
-import { useMutation, useSuspenseQuery } from "@tanstack/react-query"
+import {
+  mutationOptions,
+  queryOptions,
+  useMutation,
+  useSuspenseQuery,
+} from "@tanstack/react-query"
 import { notFound } from "@tanstack/react-router"
 import { createServerFn } from "@tanstack/react-start"
 
 import { getDB } from "#/db"
 import { posts } from "#/features/post/schema"
-import type { UpdatePostInput } from "#/features/post/type"
-import { createPostSchema, updatePostSchema } from "#/features/post/type"
+import type { PostId, UpdatePostInput } from "#/features/post/type"
+import {
+  createPostSchema,
+  postIdSchema,
+  updatePostSchema,
+} from "#/features/post/type"
 import { authMiddleware } from "#/middleware/auth"
 
 // --- Get all ---
@@ -17,14 +25,17 @@ const getPosts = createServerFn({
   method: "GET",
 }).handler(async () => {
   const db = getDB()
-  return await db.select().from(posts).orderBy(desc(posts.createdAt))
+
+  return db.query.posts.findMany({
+    orderBy: (post) => [desc(post.createdAt)],
+  })
 })
 
-export const getPostsQueryOptions = {
-  queryKey: ["posts"],
+export const getPostsQueryOptions = queryOptions({
+  queryKey: ["posts"] as const,
   queryFn: getPosts,
   staleTime: 1000 * 60 * 5, // 5 minutes
-}
+})
 
 export function useGetPosts() {
   return useSuspenseQuery(getPostsQueryOptions)
@@ -35,29 +46,27 @@ export function useGetPosts() {
 const getPostById = createServerFn({
   method: "GET",
 })
-  .inputValidator(z.object({ id: z.number() }))
+  .inputValidator(postIdSchema)
   .handler(async ({ data }) => {
     const db = getDB()
-    const [post] = await db
-      .select()
-      .from(posts)
-      .where(eq(posts.id, data.id))
-      .limit(1)
 
-    if (!post) {
-      throw notFound()
-    }
+    const post = await db.query.posts.findFirst({
+      where: (post) => eq(post.id, data.id),
+    })
+
+    if (!post) throw notFound()
+
     return post
   })
 
-export const getPostByIdQueryOptions = (id: number) => ({
-  queryKey: ["posts", id],
-  queryFn: () => getPostById({ data: { id } }),
-  staleTime: 1000 * 60 * 5, // 5 minutes
-  enabled: !!id,
-})
+export const getPostByIdQueryOptions = ({ id }: PostId) =>
+  queryOptions({
+    queryKey: [...getPostsQueryOptions.queryKey, id] as const,
+    queryFn: () => getPostById({ data: { id } }),
+    staleTime: 1000 * 60 * 5, // 5 minutes
+  })
 
-export function useGetPostById(id: number) {
+export function useGetPostById(id: PostId) {
   return useSuspenseQuery(getPostByIdQueryOptions(id))
 }
 
@@ -84,17 +93,16 @@ const createPost = createServerFn({
     return post
   })
 
-export const createPostMutationOptions = {
-  mutationFn: createPost,
-}
-
-export function useCreatePost(queryClient: QueryClient) {
-  return useMutation({
+export const createPostMutationOptions = (queryClient: QueryClient) =>
+  mutationOptions({
     mutationFn: createPost,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["posts"] })
+      queryClient.invalidateQueries({ queryKey: getPostsQueryOptions.queryKey })
     },
   })
+
+export function useCreatePost(queryClient: QueryClient) {
+  return useMutation(createPostMutationOptions(queryClient))
 }
 
 // --- Update ---
@@ -104,8 +112,8 @@ const updatePost = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
   .handler(async ({ data, context }) => {
     const { session } = context
-
     const db = getDB()
+
     const [post] = await db
       .update(posts)
       .set({
@@ -115,27 +123,22 @@ const updatePost = createServerFn({ method: "POST" })
       .where(and(eq(posts.id, data.id), eq(posts.userId, session.user.id)))
       .returning()
 
-    if (!post) {
-      // either didn't exist, or didn't belong to this user
-      throw new Error("Post not found or unauthorized")
-    }
+    // either didn't exist, or didn't belong to this user
+    if (!post) throw new Error("Post not found or unauthorized")
 
     return post
   })
 
-export const updatePostMutationOptions = (
-  id: number,
-  queryClient: QueryClient
-) => ({
-  mutationFn: (data: UpdatePostInput) => updatePost({ data }),
-  onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ["posts"] })
-    queryClient.invalidateQueries({ queryKey: ["posts", id] })
-  },
-})
+export const updatePostMutationOptions = (queryClient: QueryClient) =>
+  mutationOptions({
+    mutationFn: (data: UpdatePostInput) => updatePost({ data }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: getPostsQueryOptions.queryKey })
+    },
+  })
 
-export function useUpdatePost(id: number, queryClient: QueryClient) {
-  return useMutation(updatePostMutationOptions(id, queryClient))
+export function useUpdatePost(queryClient: QueryClient) {
+  return useMutation(updatePostMutationOptions(queryClient))
 }
 
 // --- Delete ---
@@ -143,31 +146,35 @@ export function useUpdatePost(id: number, queryClient: QueryClient) {
 const deletePost = createServerFn({
   method: "POST",
 })
-  .inputValidator(z.object({ id: z.number() }))
+  .inputValidator(postIdSchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) => {
     const { session } = context
-
     const db = getDB()
+
     const [deleted] = await db
       .delete(posts)
       .where(and(eq(posts.id, data.id), eq(posts.userId, session.user.id)))
       .returning()
 
-    if (!deleted) {
-      throw new Error("Post not found or unauthorized")
-    }
+    if (!deleted) throw new Error("Post not found or unauthorized")
 
     return deleted
   })
 
-export const deletePostMutationOptions = (queryClient: QueryClient) => ({
-  mutationFn: (id: number) => deletePost({ data: { id } }),
-  // TODO: Should be async but then the other success callback does not seem to work, now there is a very small flicker because the query has not been invalidated
-  onSuccess: () => {
-    queryClient.invalidateQueries({ queryKey: ["posts"] })
-  },
-})
+export const deletePostMutationOptions = (queryClient: QueryClient) =>
+  mutationOptions({
+    mutationFn: (data: PostId) => deletePost({ data }),
+    onSuccess: (deletedPost) => {
+      queryClient.setQueryData(getPostsQueryOptions.queryKey, (old) =>
+        old?.filter((post) => post.id !== deletedPost.id)
+      )
+
+      queryClient.removeQueries({
+        queryKey: getPostByIdQueryOptions({ id: deletedPost.id }).queryKey,
+      })
+    },
+  })
 
 export function useDeletePost(queryClient: QueryClient) {
   return useMutation(deletePostMutationOptions(queryClient))

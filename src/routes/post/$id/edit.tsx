@@ -19,11 +19,8 @@ export const Route = createFileRoute("/post/$id/edit")({
 function RouteComponent() {
   const { id } = Route.useParams()
   const navigate = Route.useNavigate()
-  const getPost = useGetPostById(Number(id))
-  const updatePost = useUpdatePost(
-    Number(id),
-    Route.useRouteContext().queryClient
-  )
+  const getPost = useGetPostById({ id: Number(id) })
+  const updatePost = useUpdatePost(Route.useRouteContext().queryClient)
 
   const post = getPost.data
 

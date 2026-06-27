@@ -1,4 +1,6 @@
+import type { NeonHttpDatabase } from "drizzle-orm/neon-http"
 import { drizzle as drizzleHttp } from "drizzle-orm/neon-http"
+import type { NeonDatabase } from "drizzle-orm/neon-serverless"
 import { drizzle as drizzlePool } from "drizzle-orm/neon-serverless"
 import { neon, Pool } from "@neondatabase/serverless"
 
@@ -23,7 +25,7 @@ export function getPoolClient() {
   return poolClient
 }
 
-let db: ReturnType<typeof drizzleHttp>
+let db: NeonHttpDatabase<typeof schema>
 
 export function getDB() {
   if (!db) {
@@ -32,7 +34,7 @@ export function getDB() {
   return db
 }
 
-let pool: ReturnType<typeof drizzlePool>
+let pool: NeonDatabase<typeof schema>
 
 export function getPool() {
   if (!pool) {

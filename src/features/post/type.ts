@@ -6,6 +6,8 @@ import { posts } from "#/features/post/schema"
 const baseInsertSchema = createInsertSchema(posts)
 const baseSelectSchema = createSelectSchema(posts)
 
+export const postIdSchema = baseSelectSchema.pick({ id: true })
+
 export const createPostSchema = baseInsertSchema
   .omit({ id: true, userId: true, createdAt: true, updatedAt: true })
   .extend({
@@ -16,10 +18,11 @@ export const createPostSchema = baseInsertSchema
       .max(5000, "Content too long"),
   })
 
-export const updatePostSchema = createPostSchema.partial().extend({
-  id: z.number(),
-})
+export const updatePostSchema = createPostSchema
+  .partial()
+  .extend(postIdSchema.shape)
 
+export type PostId = z.infer<typeof postIdSchema>
 export type CreatePostInput = z.infer<typeof createPostSchema>
 export type UpdatePostInput = z.infer<typeof updatePostSchema>
 export type Post = z.infer<typeof baseSelectSchema>

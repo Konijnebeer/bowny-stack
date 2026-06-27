@@ -18,20 +18,23 @@ function RouteComponent() {
 
   const { data: session, isPending } = authClient.useSession()
 
-  const getPost = useGetPostById(Number(id))
+  const getPost = useGetPostById({ id: Number(id) })
   const deletePost = useDeletePost(Route.useRouteContext().queryClient)
 
   const post = getPost.data
 
   function handleDelete() {
-    deletePost.mutate(Number(id), {
-      onSuccess: () => {
-        navigate({ to: "/post" })
-      },
-      onError: (error) => {
-        toast.error(`Failed to delete post: ${error.message}`)
-      },
-    })
+    deletePost.mutate(
+      { id: Number(id) },
+      {
+        onSuccess: () => {
+          navigate({ to: "/post" })
+        },
+        onError: (error) => {
+          toast.error(`Failed to delete post: ${error.message}`)
+        },
+      }
+    )
   }
 
   // Throw to trigger error boundary if delete post failed - mutate function can't throw to the error boundary
