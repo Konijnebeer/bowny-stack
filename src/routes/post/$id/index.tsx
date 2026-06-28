@@ -14,7 +14,7 @@ function RouteComponent() {
   const navigate = Route.useNavigate()
   const queryClient = Route.useRouteContext().queryClient
 
-  const user = Route.useRouteContext().session
+  const user = Route.useRouteContext().user
 
   const getPost = useGetPostById({ id: Number(id) })
   const deletePost = useDeletePost(queryClient)

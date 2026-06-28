@@ -15,7 +15,11 @@ import { Spinner } from "#/components/ui/spinner"
 
 import { authClient } from "#/lib/auth-client"
 
-import { useAccountForm, UserRegisterSchema } from "#/features/auth"
+import {
+  accountQueryOptions,
+  useAccountForm,
+  UserRegisterSchema,
+} from "#/features/auth"
 
 export const Route = createFileRoute("/(auth)/register")({
   component: RouteComponent,
@@ -23,6 +27,8 @@ export const Route = createFileRoute("/(auth)/register")({
 
 function RouteComponent() {
   const navigate = Route.useNavigate()
+  const queryClient = Route.useRouteContext().queryClient
+
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const form = useAccountForm({
@@ -50,7 +56,8 @@ function RouteComponent() {
           onSuccess: () => {
             setIsSubmitting(false)
             toast.success("Created account successfully!", { id: "register" })
-            navigate({ to: "/login" })
+            queryClient.refetchQueries(accountQueryOptions)
+            navigate({ to: "/" })
           },
           onError: (ctx) => {
             setIsSubmitting(false)

@@ -38,6 +38,8 @@ export const Route = createFileRoute("/(auth)/login")({
 function RouteComponent() {
   const navigate = Route.useNavigate()
   const { location } = Route.useSearch()
+  const queryClient = Route.useRouteContext().queryClient
+
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const form = useAccountForm({
@@ -63,6 +65,7 @@ function RouteComponent() {
           onSuccess: () => {
             setIsSubmitting(false)
             toast.success("Logged in successfully!", { id: "sign-in" })
+            queryClient.refetchQueries(accountQueryOptions)
             navigate({ to: location || "/" })
           },
           onError: (ctx) => {
