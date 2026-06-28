@@ -10,8 +10,8 @@ import { checkAuth } from "#/lib/route-guard"
 import { accountQueryOptions, useAccountQuery } from "#/features/auth"
 
 export const Route = createFileRoute("/(auth)/account")({
-  beforeLoad: async ({ location }) => {
-    await checkAuth(location.pathname)
+  beforeLoad: async ({ context: { queryClient }, location }) => {
+    return await checkAuth(queryClient, location.pathname)
   },
   loader: async ({ context: { queryClient } }) => {
     queryClient.prefetchQuery(accountQueryOptions)

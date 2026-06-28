@@ -15,11 +15,12 @@ export const Route = createFileRoute("/post/$id/")({
 function RouteComponent() {
   const { id } = Route.useParams()
   const navigate = Route.useNavigate()
+  const queryClient = Route.useRouteContext().queryClient
 
-  const { data: session, isPending } = authClient.useSession()
+  const user = Route.useRouteContext().session
 
   const getPost = useGetPostById({ id: Number(id) })
-  const deletePost = useDeletePost(Route.useRouteContext().queryClient)
+  const deletePost = useDeletePost(queryClient)
 
   const post = getPost.data
 
@@ -58,12 +59,7 @@ function RouteComponent() {
         </Button>
 
         <div className="space-x-2">
-          {isPending ? (
-            <div className="flex items-center gap-2">
-              <Skeleton className="h-7 w-20" />
-              <Skeleton className="h-7 w-18" />
-            </div>
-          ) : session?.user.id === post.userId ? (
+          {user.id === post.userId && (
             <>
               <Button variant="outline" onClick={handleDelete}>
                 Delete Post
@@ -81,7 +77,7 @@ function RouteComponent() {
                 Edit Post
               </Button>
             </>
-          ) : null}
+          )}
         </div>
       </div>
 

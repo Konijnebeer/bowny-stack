@@ -13,7 +13,9 @@ export const Route = createFileRoute("/post/create")({
 
 function RouteComponent() {
   const navigate = Route.useNavigate()
-  const createPost = useCreatePost(Route.useRouteContext().queryClient)
+  const queryClient = Route.useRouteContext().queryClient
+
+  const createPost = useCreatePost(queryClient)
 
   const form = usePostForm({
     defaultValues: {

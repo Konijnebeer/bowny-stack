@@ -16,6 +16,7 @@ export const Route = createFileRoute("/post/$id")({
   pendingMinMs: 200,
   pendingComponent: PendingComponent,
   errorComponent: ErrorComponent,
+  notFoundComponent: NotFoundComponent,
   component: Outlet,
 })
 
@@ -43,6 +44,25 @@ function ErrorComponent({ error }: ErrorComponentProps) {
       <div className="text-center">
         <h1 className="text-lg font-semibold">Error loading post</h1>
         <p>{error.message}</p>
+      </div>
+    </>
+  )
+}
+
+function NotFoundComponent() {
+  return (
+    <>
+      <div className="flex items-end justify-between py-2">
+        <Button
+          variant="outline"
+          render={<Link to="/post" />}
+          nativeButton={false}
+        >
+          Back to Posts
+        </Button>
+      </div>
+      <div className="text-center">
+        <h1 className="text-lg font-semibold">Post not found</h1>
       </div>
     </>
   )

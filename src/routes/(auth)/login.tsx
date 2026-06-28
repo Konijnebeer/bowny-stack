@@ -16,22 +16,22 @@ import { Spinner } from "#/components/ui/spinner"
 
 import { authClient } from "#/lib/auth-client"
 
-import { useAccountForm, UserLoginSchema } from "#/features/auth"
+import {
+  accountQueryOptions,
+  useAccountForm,
+  UserLoginSchema,
+} from "#/features/auth"
 
 export const Route = createFileRoute("/(auth)/login")({
   validateSearch: z.object({
     location: z.string().optional(),
   }),
-  // TODO: Fix this, investigate why it does not work
-  // beforeLoad: async ({ location }) => {
-  //   const session = await authClient.getSession()
-  //   console.log(session)
-  //   if (session.data) {
-  //     console.log('User is already logged in, redirecting...')
-  //     console.log(location)
-  //     throw redirect({ to: (location as unknown as string) || '/' })
-  //   }
-  // },
+  beforeLoad: async ({ context: { queryClient }, search }) => {
+    const session = await queryClient.ensureQueryData(accountQueryOptions)
+    if (session) {
+      throw redirect({ to: search.location || "/" })
+    }
+  },
   component: RouteComponent,
 })
 

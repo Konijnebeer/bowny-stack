@@ -3,8 +3,8 @@ import { createFileRoute, Outlet } from "@tanstack/react-router"
 import { checkAuth } from "#/lib/route-guard"
 
 export const Route = createFileRoute("/post")({
-  beforeLoad: async ({ location }) => {
-    await checkAuth(location.pathname)
+  beforeLoad: async ({ context: { queryClient }, location }) => {
+    return await checkAuth(queryClient, location.pathname)
   },
   component: RouteComponent,
 })

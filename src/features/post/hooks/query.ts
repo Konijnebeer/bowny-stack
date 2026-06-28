@@ -26,9 +26,11 @@ const getPosts = createServerFn({
 }).handler(async () => {
   const db = getDB()
 
-  return db.query.posts.findMany({
+  const posts = await db.query.posts.findMany({
     orderBy: (post) => [desc(post.createdAt)],
   })
+
+  return posts
 })
 
 export const getPostsQueryOptions = queryOptions({
@@ -46,7 +48,7 @@ export function useGetPosts() {
 const getPostById = createServerFn({
   method: "GET",
 })
-  .inputValidator(postIdSchema)
+  .validator(postIdSchema)
   .handler(async ({ data }) => {
     const db = getDB()
 
@@ -75,7 +77,7 @@ export function useGetPostById(id: PostId) {
 const createPost = createServerFn({
   method: "POST",
 })
-  .inputValidator(createPostSchema)
+  .validator(createPostSchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) => {
     const { session } = context
@@ -89,6 +91,8 @@ const createPost = createServerFn({
         userId: session.user.id,
       })
       .returning()
+
+    if (!post) throw new Error("Failed to create post")
 
     return post
   })
@@ -108,7 +112,7 @@ export function useCreatePost(queryClient: QueryClient) {
 // --- Update ---
 
 const updatePost = createServerFn({ method: "POST" })
-  .inputValidator(updatePostSchema)
+  .validator(updatePostSchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) => {
     const { session } = context
@@ -146,7 +150,7 @@ export function useUpdatePost(queryClient: QueryClient) {
 const deletePost = createServerFn({
   method: "POST",
 })
-  .inputValidator(postIdSchema)
+  .validator(postIdSchema)
   .middleware([authMiddleware])
   .handler(async ({ data, context }) => {
     const { session } = context
